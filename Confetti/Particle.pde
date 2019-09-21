@@ -41,7 +41,7 @@ class Particle {
     if (x < THRESHOLD) {
       // Top section
       if (y < THRESHOLD) {
-        horizontalVelocity = random(-5, 5);
+        horizontalVelocity = random(1, 5);
         verticalVelocity = random(1, 5);
       }
       // Middle section
@@ -51,7 +51,7 @@ class Particle {
       }
       // Bottom Section
       else {
-        horizontalVelocity = random(-5, 5);
+        horizontalVelocity = random(1, 5);
         verticalVelocity = random(-5, -1);
       }
       // Middle section of the screen
@@ -76,7 +76,7 @@ class Particle {
     else {
       // Top section
       if (y < THRESHOLD) {
-        horizontalVelocity = random(-5, 5);
+        horizontalVelocity = random(-5, -1);
         verticalVelocity = random(1, 5);
       }
       // Middle section
@@ -86,7 +86,7 @@ class Particle {
       }
       // Bottom section
       else {
-        horizontalVelocity = random(-5, 5);
+        horizontalVelocity = random(-5, -1);
         verticalVelocity = random(-5, -1);
       }
     }
