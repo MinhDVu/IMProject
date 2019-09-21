@@ -15,8 +15,8 @@ type[] shapes = {type.ELLIPSE, type.SQUARE, type.TRIANGLE};
 final int THRESHOLD = 100;
 
 class Particle {
-  // Positions, radius, opacity
-  float x, y, r, opacity;
+  // Positions, radius, opacity, angle
+  float x, y, r, opacity, angle;
   // How much the particle should move horizontally or vertically 
   float horizontalVelocity, verticalVelocity;
   // Color & shape
@@ -106,20 +106,27 @@ class Particle {
     this.show();
   }
 
+  // Rotate and draws the shapes 
   private void show() {
+    pushMatrix();
+    translate(x, y);
+    rotate(angle += 0.1);
     noStroke();
     fill(pColor, opacity);
     if (shape == type.ELLIPSE) {
-      ellipse(x, y, r*2, r*2);
+      ellipse(0, 0, r*2, r*2);
     } else if (shape == type.SQUARE) {
-      square(x, y, r*2);
+      rectMode(CENTER);
+      square(0, 0, r*2);
     } else if (shape == type.TRIANGLE) {
-      triangle(x, y, x-(r*2), y+r, x-(r*2), y-r);
+      triangle(r, r, -r/3*2, r/3*2, r/3*2, -r/3*2);
     }
     //backup just in case random() returns an outofbound object
     else {
       ellipse(x, y, r*2, r*2);
     }
+
+    popMatrix();
   }
 
   private color randomColor() {

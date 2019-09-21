@@ -8,56 +8,22 @@ class CollisionParticle {
   float g;
   float b;
 
-  CollisionParticle(float ix, float iy, float ivx, float ivy, float isize, float ir, float ig, float ib) {
-    x = ix; 
-    y = iy;
-    vx = ivx;
-    vy = ivy;
-    size = isize;
-    r = ir;
-    g = ig;
-    b = ib;
+  CollisionParticle(float x, float y, float vx, float vy, float size, float r, float g, float b) {
+    this.x = x; 
+    this.y = y;
+    this.vx = vx;
+    this.vy = vy;
+    this.size = size;
+    this.r = r;
+    this.g = g;
+    this.b = b;
   }
 
   void update() {
-    loadPixels();
-    video.loadPixels();// comment this line to turn off the background
-    //backButton();
-    prevFrame.loadPixels();
-
     // These are the variables we'll need to find the average X and Y
     float sumX = 0;
     float sumY = 0;
     int motionCount = 0; 
-
-    // Begin loop to walk through every pixel
-    for (int x1 = 0; x1 < video.width; x1++ ) {
-      for (int y1 = 0; y1 < video.height; y1++ ) {
-        // What is the current color
-        color current = video.pixels[x1+y1*video.width];
-
-        // What is the previous color
-        color previous = prevFrame.pixels[x1+y1*video.width];
-
-        // Step 4, compare colors (previous vs. current)
-        float r1 = red(current); 
-        float g1 = green(current);
-        float b1 = blue(current);
-        float r2 = red(previous); 
-        float g2 = green(previous);
-        float b2 = blue(previous);
-
-        // Motion for an individual pixel is the difference between the previous color and current color.
-        float diff = dist(r1, g1, b1, r2, g2, b2);
-
-        // If it's a motion pixel add up the x's and the y's
-        if (diff > threshold) {
-          sumX += x1;
-          sumY += y1;
-          motionCount++;
-        }
-      }
-    }
 
     // average location is total location divided by the number of motion pixels.
     float avgX = sumX / motionCount; 
@@ -68,7 +34,6 @@ class CollisionParticle {
     noStroke();
     fill(150);
     ellipse(avgX, avgY, 16, 16);
-
 
     float dist = size;
     if (dist >= abs(x - mouseX) && dist >= abs(y - mouseY)) {

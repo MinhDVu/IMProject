@@ -1,32 +1,20 @@
-import processing.video.*;
 float threshold = 50;
-Capture video;
-// Previous Frame
-PImage prevFrame;
-//lists of objects
 
+//lists of objects
 ArrayList<CollisionParticle> interactiveCollisions = new ArrayList<CollisionParticle>();
 //constants
+
 float g = 0.015;
 float dt = 0;
 //screens
-boolean homescreen = true;
-boolean interactiveCollision = false;
+
+boolean interactiveCollision = true;
+
 void setup() {
   size(640, 480);
-  video = new Capture(this, width, height);
-  video.start();
-
-  // Create an empty image the same size as the video
-  prevFrame = createImage(video.width, video.height, RGB);
   reset();
 }
-void captureEvent(Capture video) {
-  // Save previous frame for motion detection!!
-  prevFrame.copy(video, 0, 0, video.width, video.height, 0, 0, video.width, video.height);
-  prevFrame.updatePixels();  
-  video.read();
-}
+
 void reset() {
   background(0);
 
@@ -36,92 +24,18 @@ void reset() {
   }
 }
 void draw() {
+  background(0);
   drawAndUpdate();
 }
-void mousePressed() {
-  float xDist = 160;
-  float yDist = 40;
-  if (homescreen == true) {
 
-    if (abs(mouseX - 320) <= xDist && abs(mouseY - 330) <= yDist) {
-      homescreen = false;
-      interactiveCollision = true;
-    }
-  }
-  //non home screen
-  if (homescreen == false) {
-    xDist = 60;
-    yDist = 20;
-    if (abs(mouseX - 120) <= xDist && abs(mouseY - 40) <= yDist) {
-
-      interactiveCollision = false;
-      homescreen = true;
-    }
-  }
-}
 void drawAndUpdate() {
-  // homescreen
-  if (homescreen == true) {
-    background(255);
-
-
-    fill(#5D92DB);
-    rect(348, 300, 500, 120, 40);
-    fill(0);
-    textSize(63);
-    text("Assignment 4", 390, 380);
-
-    // sub rects
-    float xDist = 160;
-    float yDist = 40;
-    // interactive collision button
-    if (abs(mouseX - 320) <= xDist && abs(mouseY - 330) <= yDist) {
-      fill(#48B788);
-      rect(440, 570, 320, 80, 40);
-      fill(255);
-      textSize(56);
-      text("Start", 470, 630);
-    } else {
-      fill(#95EAC0);
-      rect(440, 570, 320, 80, 40);
-      fill(255);
-      textSize(56);
-      text("Collisions", 470, 630);
-    }
-  }
-
-  // update
-  if (homescreen == false) {
-    backButton();
     if (interactiveCollision == true) {
-      //image(video, 0, 0);// show video
-
       collide();
       for (int i = 0; i < interactiveCollisions.size(); i ++) {
         interactiveCollisions.get(i).update();
         interactiveCollisions.get(i).display();
       }
     }
-  }
-}
-void backButton() {
-  float xDist = 60;
-  float yDist = 20;
-  if (abs(mouseX - 120) <= xDist && abs(mouseY - 40) <= yDist) {
-    background(0);
-    fill(100); 
-    rect(75, 20, 120, 40, 10);
-    fill(200);
-    textSize(38);
-    text("back", 95, 52);
-  } else {
-    background(0);
-    fill(50);
-    rect(75, 20, 120, 40, 10);
-    fill(100);
-    textSize(38);
-    text("back", 95, 52);
-  }
 }
 
 void collide() {

@@ -2,14 +2,13 @@ ArrayList<Particle> confetti;
 
 void setup() {
   size(600, 600);
-  frameRate(30);
   confetti = new ArrayList<Particle>();
 }
 
 void draw() {
   background(0);
   stroke(255);
-  // Divide sections on screen that animations will behave differently
+  // Divide sections on screen where animations will behave differently
   line(100, 0, 100, height);
   line(0, 100, width, 100);
   line(width - 100, 0, width - 100, height);
@@ -24,8 +23,8 @@ void draw() {
     }
   }
 
-  // Just in case you are tired of mouse clicking
-  //  for (int i= 0; i < 5; i++) {
+   //Just in case you are tired of mouse clicking
+  //  for (int i= 0; i < 2; i++) {
   //  confetti.add(new Particle(mouseX, mouseY));
   //}
 }
