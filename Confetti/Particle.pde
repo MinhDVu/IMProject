@@ -4,13 +4,6 @@ color purple = color(90, 16, 139);
 color orange = color(225, 126, 35);
 color colorsP[] = {jade, blue, orange, purple}; 
 
-enum direction {
-  LEFT, 
-    RIGHT, 
-    DOWN, 
-    UP
-}
-
 enum type {
   ELLIPSE, 
     SQUARE, 
@@ -19,62 +12,101 @@ enum type {
 
 type[] shapes = {type.ELLIPSE, type.SQUARE, type.TRIANGLE};
 
+final int THRESHOLD = 100;
+
 class Particle {
-  //positions, radius, opacity
+  // Positions, radius, opacity
   float x, y, r, opacity;
-  //how much the particle should move horizontally or vertically 
-  float degreeH, degreeV;
-  //whether particle is going up or down, left or right
-  direction horizontalD, verticalD;
-  //color & shape
+  // How much the particle should move horizontally or vertically 
+  float horizontalVelocity, verticalVelocity;
+  // Color & shape
   color pColor;
   type shape; 
 
+  // Randomizes the shape, color upon creating the object
   public Particle(float x, float y) {
     this.x = x;
     this.y = y;
     r = random(5, 10);
-    degreeV = random(1, 5);
-    degreeH = random(1, 5);
-    getDirections();
     opacity = 255;
     pColor = randomColor();
     shape = shapes[(int)random(0, shapes.length)];
+    getDirections();
   }
 
+  // Depending on the position of the particle on screen, decide which direction to move
+  // i.e: if top panel of the screen, move x randomly but y down
   private void getDirections() {
-    if (x > width/2) {
-      horizontalD = direction.LEFT;
-    } else {
-      horizontalD = direction.RIGHT;
+    // Left panel of the screen
+    if (x < THRESHOLD) {
+      // Top section
+      if (y < THRESHOLD) {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(1, 5);
+      }
+      // Middle section
+      else if (y > THRESHOLD && y < height - THRESHOLD) {
+        horizontalVelocity = random(1, 5);
+        verticalVelocity = random(-5, 5);
+      }
+      // Bottom Section
+      else {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(-5, -1);
+      }
+      // Middle section of the screen
+    } else if (x > THRESHOLD && x < width - THRESHOLD) {
+      // Top section
+      if (y < THRESHOLD) {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(1, 5);
+      }
+      // Middle section
+      else if (y > THRESHOLD && y < height - THRESHOLD) {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(-5, 5);
+      }
+      // Bottom section
+      else {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(-5, -1);
+      }
     }
-
-    if (y > height/2) {
-      verticalD = direction.UP;
-    } else {
-      verticalD = direction.DOWN;
+    // Right panel of the screen
+    else {
+      // Top section
+      if (y < THRESHOLD) {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(1, 5);
+      }
+      // Middle section
+      else if (y > THRESHOLD && y < height - THRESHOLD) {
+        horizontalVelocity = random(-5, -1);
+        verticalVelocity = random(-5, 5);
+      }
+      // Bottom section
+      else {
+        horizontalVelocity = random(-5, 5);
+        verticalVelocity = random(-5, -1);
+      }
     }
   }
 
+  // Not much here. Add velocity values to x and y to move the object,
+  // and decrease radius and opacity
   public void update() {
-    if (horizontalD == direction.LEFT) {
-      x-= degreeH;
-    } else {
-      x += degreeH;
-    }
-
-    if (verticalD == direction.UP) {
-      y -= degreeV;
-    } else {
-      y += degreeV;
-    }
+    x += horizontalVelocity;
+    y += verticalVelocity;
     if (r > 0) {
       r-=0.1;
     }
-    opacity-=3;
+    opacity-=2;
+
+    // Call show() to reduce the number of functions called in the main thread
+    this.show();
   }
 
-  public void show() {
+  private void show() {
     noStroke();
     fill(pColor, opacity);
     if (shape == type.ELLIPSE) {
