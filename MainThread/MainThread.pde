@@ -3,7 +3,7 @@ public static  Logo logo;
 public final int THRESHOLD = 100;
 
 void setup() {
-  size(600, 600);
+  size(800, 600);
   //frameRate(30);
   confetti = new ArrayList<Particle>();
   logo = new Logo(random(width), random(height));
@@ -23,9 +23,31 @@ void draw() {
     }
   }
 
+  updateLogo();
+}
+
+private void updateLogo() {
   logo.update();
-  
-  if (logo.x >= width - THRESHOLD || logo.x <= THRESHOLD || logo.y >= height - THRESHOLD || logo.y <= THRESHOLD) {
+  if (logo.x + logo.logo_img.width >= width) {
+    logo.xVelocity = -logo.xVelocity;
+    logo.x = width - logo.logo_img.width;
+    logo.updateColor();
+    addConfetti();
+  } else if (logo.x <= 0) {
+    logo.xVelocity = -logo.xVelocity;
+    logo.x = 0;
+    logo.updateColor();
+    addConfetti();
+  }
+  if (logo.y + logo.logo_img.height > height) {
+    logo.yVelocity = -logo.yVelocity;
+    logo.y = height - logo.logo_img.height;
+    logo.updateColor();
+    addConfetti();
+  } else if (logo.y <= 0) {
+    logo.yVelocity = -logo.yVelocity;
+    logo.y = 0;
+    logo.updateColor();
     addConfetti();
   }
 }
@@ -38,7 +60,7 @@ void mousePressed() {
 }
 
 public void addConfetti() {
-  for (int i= 0; i < 10; i++) {
+  for (int i= 0; i < 50; i++) {
     confetti.add(new Particle(logo.xCenter, logo.yCenter));
   }
 }

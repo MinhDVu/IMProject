@@ -1,7 +1,7 @@
 class Logo {
 
   public float x, y, xCenter, yCenter;
-  private float xVelocity, yVelocity;
+  public float xVelocity, yVelocity;
   private color rgb;
   PImage logo_img;
 
@@ -11,13 +11,11 @@ class Logo {
     //xVelocity = random(1, 10);
     //yVelocity = random(1, 10);
     xVelocity = yVelocity = 2;
-    this.rgb = randomColor();
+    this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
   }
   
   public void update() {
-    checkCollision();
-
     x += xVelocity;
     y -= yVelocity;
 
@@ -26,34 +24,14 @@ class Logo {
 
     show();
   }
-
-  private void checkCollision() {
-    if (x + logo_img.width >= width) {
-      xVelocity = -xVelocity;
-      x = width - logo_img.width;
-      this.rgb = randomColor();
-    } else if (x <= 0) {
-      xVelocity = -xVelocity;
-      x = 0;
-      this.rgb = randomColor();
-    }
-    if (y + logo_img.height > height) {
-      yVelocity = -yVelocity;
-      y = height - logo_img.height;
-      this.rgb = randomColor();
-    } else if (y <= 0) {
-      yVelocity = -yVelocity;
-      y = 0;
-      this.rgb = randomColor();
-    }
+  
+  public void updateColor() {
+    //rgb = color(random(256), random(256), random(256));
+    rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
 
   private void show() {
     tint(this.rgb);
     image(logo_img, x, y);
-  }
-
-  private color randomColor() {
-    return color(random(256), random(256), random(256));
   }
 }

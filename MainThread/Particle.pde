@@ -4,6 +4,22 @@ color purple = color(90, 16, 139);
 color orange = color(225, 126, 35);
 color colorsP[] = {jade, blue, orange, purple}; 
 
+color salmon = color(255, 154, 162);
+color melon = color(255, 183, 178);
+color paleOrange = color(255, 218, 193);
+color gum = color(226, 240, 203);
+color mint = color(181, 234, 215);
+color crayola = color(199, 206, 234);
+color colorsR[] = {salmon, melon, paleOrange, gum, mint, crayola};
+
+color jasper = color(222, 65, 61);
+color buster = color(222, 221, 101);
+color green = color(1, 168, 14);
+color seaSerpent = color(91, 201, 215);
+color palaBlue = color(28, 59, 215);
+color amethyst = color(142, 82, 211);
+color colorsR2[] = {jasper, buster, green, seaSerpent, palaBlue, amethyst};
+
 enum type {
   ELLIPSE, 
     SQUARE, 
@@ -128,6 +144,11 @@ class Particle {
   }
 
   private color randomColor() {
-    return colorsP[(int)random(0, colorsP.length)];
+    //Themed colors
+    return colorsR2[(int)random(0, colorsR2.length)];
+    //Random RGB colors
+    //return color(random(256), random(256), random(256));
+    //Logo colors
+    //return logo.rgb;
   }
 }
