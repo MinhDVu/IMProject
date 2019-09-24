@@ -12,13 +12,11 @@ enum type {
 
 type[] shapes = {type.ELLIPSE, type.SQUARE, type.TRIANGLE};
 
-final int THRESHOLD = 100;
-
 class Particle {
   // Positions, radius, opacity, angle
   float x, y, r, opacity, angle;
   // How much the particle should move horizontally or vertically 
-  float horizontalVelocity, verticalVelocity;
+  float xVelocity, yVelocity;
   // Color & shape
   color pColor;
   type shape; 
@@ -41,53 +39,53 @@ class Particle {
     if (x < THRESHOLD) {
       // Top section
       if (y < THRESHOLD) {
-        horizontalVelocity = random(1, 5);
-        verticalVelocity = random(1, 5);
+        xVelocity = random(1, 5);
+        yVelocity = random(1, 5);
       }
       // Middle section
       else if (y > THRESHOLD && y < height - THRESHOLD) {
-        horizontalVelocity = random(1, 5);
-        verticalVelocity = random(-5, 5);
+        xVelocity = random(1, 5);
+        yVelocity = random(-5, 5);
       }
       // Bottom Section
       else {
-        horizontalVelocity = random(1, 5);
-        verticalVelocity = random(-5, -1);
+        xVelocity = random(1, 5);
+        yVelocity = random(-5, -1);
       }
       // Middle section of the screen
     } else if (x > THRESHOLD && x < width - THRESHOLD) {
       // Top section
       if (y < THRESHOLD) {
-        horizontalVelocity = random(-5, 5);
-        verticalVelocity = random(1, 5);
+        xVelocity = random(-5, 5);
+        yVelocity = random(1, 5);
       }
       // Middle section
       else if (y > THRESHOLD && y < height - THRESHOLD) {
-        horizontalVelocity = random(-5, 5);
-        verticalVelocity = random(-5, 5);
+        xVelocity = random(-5, 5);
+        yVelocity = random(-5, 5);
       }
       // Bottom section
       else {
-        horizontalVelocity = random(-5, 5);
-        verticalVelocity = random(-5, -1);
+        xVelocity = random(-5, 5);
+        yVelocity = random(-5, -1);
       }
     }
     // Right panel of the screen
     else {
       // Top section
       if (y < THRESHOLD) {
-        horizontalVelocity = random(-5, -1);
-        verticalVelocity = random(1, 5);
+        xVelocity = random(-5, -1);
+        yVelocity = random(1, 5);
       }
       // Middle section
       else if (y > THRESHOLD && y < height - THRESHOLD) {
-        horizontalVelocity = random(-5, -1);
-        verticalVelocity = random(-5, 5);
+        xVelocity = random(-5, -1);
+        yVelocity = random(-5, 5);
       }
       // Bottom section
       else {
-        horizontalVelocity = random(-5, -1);
-        verticalVelocity = random(-5, -1);
+        xVelocity = random(-5, -1);
+        yVelocity = random(-5, -1);
       }
     }
   }
@@ -95,8 +93,8 @@ class Particle {
   // Not much here. Add velocity values to x and y to move the object,
   // and decrease radius and opacity
   public void update() {
-    x += horizontalVelocity;
-    y += verticalVelocity;
+    x += xVelocity;
+    y += yVelocity;
     if (r > 0) {
       r-=0.1;
     }
