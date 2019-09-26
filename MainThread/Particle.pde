@@ -41,7 +41,7 @@ class Particle {
   public Particle(float x, float y) {
     this.x = x;
     this.y = y;
-    r = random(5, 10);
+    r = random(5, 12);
     opacity = 255;
     pColor = randomColor();
     shape = shapes[(int)random(0, shapes.length)];
