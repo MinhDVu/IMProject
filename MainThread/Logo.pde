@@ -1,30 +1,55 @@
 class Logo {
 
-  public float x, y, xCenter, yCenter;
+  public float XTL, YTL, XTR, YTR, XBL, YBL, XBR, YBR;
   public float xVelocity, yVelocity;
+  public float xCenter, yCenter;
   private color rgb;
   PImage logo_img;
 
   public Logo(float x, float y) {
-    this.x = x;
-    this.y = y;
-    //xVelocity = random(1, 10);
-    //yVelocity = random(1, 10);
+    this.XTL = x;
+    this.YTL = y;
     xVelocity = yVelocity = 2;
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
   }
-  
-  public void update() {
-    x += xVelocity;
-    y -= yVelocity;
 
-    xCenter = x + logo_img.width/2;
-    yCenter = y + logo_img.height/2;
+  public void reverseDirection() {
+    logo.xVelocity = -logo.xVelocity;
+    logo.yVelocity = -logo.yVelocity;
+  }
+
+  public void update() {
+    XTL += xVelocity;
+    YTL -= yVelocity;
+
+    /** 
+     * TL----------------TR
+     * |                  |
+     * |     xyCenter     |
+     * |                  |
+     * BL----------------BR
+     */
+
+    //Update logo's center location
+    xCenter = XTL + logo_img.width/2;
+    yCenter = YTL + logo_img.height/2;
+
+    //Update top right corner of the logo
+    XTR = XTL + logo_img.width;
+    YTR = YTL;
+
+    //Update bottom left corner
+    XBL = XTL;
+    YBL = YTL + logo_img.height;
+
+    //Update bottom right corner
+    XBR = XTL + logo_img.width;
+    YBR = YTL + logo_img.height;
 
     show();
   }
-  
+
   public void updateColor() {
     //rgb = color(random(256), random(256), random(256));
     rgb = colorsR2[(int)random(0, colorsR2.length)];
@@ -32,6 +57,12 @@ class Logo {
 
   private void show() {
     tint(this.rgb);
-    image(logo_img, x, y);
+    image(logo_img, XTL, YTL);
+    fill(this.rgb);
+    noStroke();
+    ellipse(XTL, YTL, 10, 10);
+    ellipse(XTR, YTR, 10, 10);
+    ellipse(XBL, YBL, 10, 10);
+    ellipse(XBR, YBR, 10, 10);
   }
 }
