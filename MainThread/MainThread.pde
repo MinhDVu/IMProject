@@ -2,7 +2,7 @@ import de.voidplus.leapmotion.*;
 
 public static ArrayList<Particle> confetti;
 public static  Logo logo;
-public final int THRESHOLD = 100;
+public final int THRESHOLD = 20;
 public LeapMotion leap;
 public Bone[] bones;
 
@@ -22,7 +22,7 @@ void leapOnConnect() {
 void draw() {
   background(0);
   stroke(255);
-  //drawThreshold();
+  drawThreshold();
   updateParticles();
   updateLogo();
   updateHands();
@@ -74,24 +74,26 @@ private void updateLogo() {
    * |                  |
    * BL----------------BR
    */
+  if (false) {
   
-  if (logo.XTR >= width || logo.XBR >= width) {
+  }
+  
+  else if (logo.XTR >= width) {
     logo.xVelocity = -logo.xVelocity;
     logo.XTL = width - logo.logo_img.width;
     logo.updateColor();
     addConfetti();
-  } else if (logo.XTL <= 0 || logo.XBL <= width) {
+  } else if (logo.XTL <= 0) {
     logo.xVelocity = -logo.xVelocity;
     logo.XTL = 0;
     logo.updateColor();
     addConfetti();
-  }
-  if (logo.YBL >= height || logo.YBR >= height) {
+  } else if (logo.YBL >= height) {
     logo.yVelocity = -logo.yVelocity;
     logo.YTL = height - logo.logo_img.height;
     logo.updateColor();
     addConfetti();
-  } else if (logo.YTL <= 0 || logo.YTR <= 0) {
+  } else if (logo.YTL <= 0) {
     logo.yVelocity = -logo.yVelocity;
     logo.YTL = 0;
     logo.updateColor();
@@ -119,12 +121,11 @@ private void show(float x, float y) {
   ellipse(x, y, 10, 10);
 }
 
-/**
+
 private void drawThreshold() {
   // Divide sections on screen where animations will behave differently
-  line(100, 0, THRESHOLD, height);
+  line(THRESHOLD, 0, THRESHOLD, height);
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
   line(0, height - THRESHOLD, width, height - THRESHOLD);
 }
-*/

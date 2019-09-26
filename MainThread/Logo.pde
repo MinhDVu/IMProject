@@ -9,14 +9,14 @@ class Logo {
   public Logo(float x, float y) {
     this.XTL = x;
     this.YTL = y;
-    xVelocity = yVelocity = 2;
+    xVelocity = yVelocity = random(1, 5);
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
   }
 
   public void reverseDirection() {
     logo.xVelocity = -logo.xVelocity;
-    logo.yVelocity = -logo.yVelocity;
+    //logo.yVelocity = -logo.yVelocity;
   }
 
   public void update() {
