@@ -1,24 +1,23 @@
 class Logo {
-
+  // Coordinates of the logo's corners TL = Top Left, BL = Bottom Right, etc.
   public float XTL, YTL, XTR, YTR, XBL, YBL, XBR, YBR;
+  //Logo's xy velocity
   public float xVelocity, yVelocity;
+  //Reserved var for LeapMotion Integration
   public float xCenter, yCenter;
+  //Logo's color and images
   private color rgb;
   PImage logo_img;
 
   public Logo(float x, float y) {
     this.XTL = x;
     this.YTL = y;
-    xVelocity = yVelocity = random(1, 5);
+    xVelocity = yVelocity = 4;
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
   }
 
-  public void reverseDirection() {
-    logo.xVelocity = -logo.xVelocity;
-    //logo.yVelocity = -logo.yVelocity;
-  }
-
+  // Add velocity to xy, refer to MainThread>draw() method
   public void update() {
     XTL += xVelocity;
     YTL -= yVelocity;
@@ -50,19 +49,22 @@ class Logo {
     show();
   }
 
+  //Assign a random color for the logo
   public void updateColor() {
     //rgb = color(random(256), random(256), random(256));
     rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
 
+  //Draw the tinted logo and 4 corners
   private void show() {
     tint(this.rgb);
     image(logo_img, XTL, YTL);
-    fill(this.rgb);
+    fill(255, 0, 0);
     noStroke();
     ellipse(XTL, YTL, 10, 10);
     ellipse(XTR, YTR, 10, 10);
     ellipse(XBL, YBL, 10, 10);
     ellipse(XBR, YBR, 10, 10);
+    ellipse(xCenter, yCenter, 10, 10);
   }
 }

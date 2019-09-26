@@ -106,8 +106,7 @@ class Particle {
     }
   }
 
-  // Not much here. Add velocity values to x and y to move the object,
-  // and decrease radius and opacity
+  // Add velocity values to x and y to move the object, and decrease radius and opacity
   public void update() {
     x += xVelocity;
     y += yVelocity;
@@ -123,8 +122,10 @@ class Particle {
   // Rotate and draws the shapes 
   private void show() {
     pushMatrix();
+    
     translate(x, y);
     rotate(angle += 0.1);
+    
     noStroke();
     fill(pColor, opacity);
     if (shape == type.ELLIPSE) {

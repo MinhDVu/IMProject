@@ -1,10 +1,11 @@
 import de.voidplus.leapmotion.*;
 
-public static ArrayList<Particle> confetti;
-public static  Logo logo;
-public final int THRESHOLD = 20;
-public LeapMotion leap;
-public Bone[] bones;
+static ArrayList<Particle> confetti;
+static  Logo logo;
+LeapMotion leap;
+Bone[] bones;
+
+public final int THRESHOLD = 10;
 
 void setup() {
   size(800, 600);
@@ -30,23 +31,22 @@ void draw() {
 
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
-    hand.draw();
-    //println();
+    //hand.draw();
     PVector handPosition = hand.getPosition();
-    ellipse(handPosition.x, handPosition.y, hand.getSphereRadius(), hand.getSphereRadius());  
-
+    ellipse(handPosition.x, handPosition.y, hand.getSphereRadius(), hand.getSphereRadius());
 
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
-      show(fingerPosition.x, fingerPosition.y);
+      visualizePoint(fingerPosition.x, fingerPosition.y);
       //Default draw method with 3px in radius for each joints, can't be used for our purpose but good to have during dev process
-      //finger.draw();
+      finger.draw();
 
       bones = new Bone[]{finger.getBone(0), finger.getBone(1), finger.getBone(2), finger.getBone(3)};
 
       for (Bone bone : bones ) {
         PVector joint = bone.getPrevJoint();
-        show(joint.x, joint.y);
+        //TODO: Logo collision detection here
+        visualizePoint(joint.x, joint.y);
       }
     }
   }
@@ -66,7 +66,7 @@ private void updateParticles() {
 
 private void updateLogo() {
   logo.update();
-  
+
   /** 
    * TL----------------TR
    * |                  |
@@ -74,30 +74,42 @@ private void updateLogo() {
    * |                  |
    * BL----------------BR
    */
+
+  //Reserved space of corner detection
   if (false) {
-  
   }
-  
+
+  //If logo hits right side of the screen
   else if (logo.XTR >= width) {
     logo.xVelocity = -logo.xVelocity;
     logo.XTL = width - logo.logo_img.width;
     logo.updateColor();
-    addConfetti();
+    addConfetti(logo.XTR, logo.YTR);
+    addConfetti(logo.XBR, logo.YBR);
+
+    //If logo hits left side of the screen
   } else if (logo.XTL <= 0) {
     logo.xVelocity = -logo.xVelocity;
     logo.XTL = 0;
     logo.updateColor();
-    addConfetti();
+    addConfetti(logo.XTL, logo.YTL);
+    addConfetti(logo.XBL, logo.YBL);
+
+    //If logo hits bottom side
   } else if (logo.YBL >= height) {
     logo.yVelocity = -logo.yVelocity;
     logo.YTL = height - logo.logo_img.height;
     logo.updateColor();
-    addConfetti();
+    addConfetti(logo.XBL, logo.YBL);
+    addConfetti(logo.XBR, logo.YBR);
+
+    //If logo hits top side
   } else if (logo.YTL <= 0) {
     logo.yVelocity = -logo.yVelocity;
     logo.YTL = 0;
     logo.updateColor();
-    addConfetti();
+    addConfetti(logo.XTR, logo.YTR);
+    addConfetti(logo.XTL, logo.YTL);
   }
 }
 
@@ -106,17 +118,15 @@ void mousePressed() {
   for (int i= 0; i < 10; i++) {
     confetti.add(new Particle(mouseX, mouseY));
   }
-
-  logo.reverseDirection();
 }
 
-public void addConfetti() {
-  for (int i= 0; i < 30; i++) {
-    confetti.add(new Particle(logo.xCenter, logo.yCenter));
+public void addConfetti(float x, float y) {
+  for (int i= 0; i < 10; i++) {
+    confetti.add(new Particle(x, y));
   }
 }
 
-private void show(float x, float y) {
+private void visualizePoint(float x, float y) {
   fill(255, 0, 0);
   ellipse(x, y, 10, 10);
 }
