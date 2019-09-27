@@ -1,6 +1,7 @@
 import de.voidplus.leapmotion.*;
 
 static ArrayList<Particle> confetti;
+
 static  Logo logo;
 LeapMotion leap;
 Bone[] bones;
@@ -21,7 +22,7 @@ void leapOnConnect() {
 }
 
 void draw() {
-  background(0);
+  background(255);
   stroke(255);
   drawThreshold();
   updateParticles();
@@ -31,15 +32,15 @@ void draw() {
 
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
-    //hand.draw();
+    hand.draw();
     PVector handPosition = hand.getPosition();
-    ellipse(handPosition.x, handPosition.y, hand.getSphereRadius(), hand.getSphereRadius());
+    visualizePoint(handPosition.x, handPosition.y);
 
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
       visualizePoint(fingerPosition.x, fingerPosition.y);
       //Default draw method with 3px in radius for each joints, can't be used for our purpose but good to have during dev process
-      finger.draw();
+      //finger.draw();
 
       bones = new Bone[]{finger.getBone(0), finger.getBone(1), finger.getBone(2), finger.getBone(3)};
 
@@ -47,6 +48,11 @@ private void updateHands() {
         PVector joint = bone.getPrevJoint();
         //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
+        
+        if (dist(joint.x, joint.y, logo.xCenter, logo.yCenter) < logo.r) {
+          print("Logo touched !");
+          logo.handleCollision(joint.x, joint.y);
+        }
       }
     }
   }

@@ -4,7 +4,7 @@ class Logo {
   //Logo's xy velocity
   public float xVelocity, yVelocity;
   //Reserved var for LeapMotion Integration
-  public float xCenter, yCenter;
+  public float xCenter, yCenter, r;
   //Logo's color and images
   private color rgb;
   PImage logo_img;
@@ -15,6 +15,7 @@ class Logo {
     xVelocity = yVelocity = 4;
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
+    r = logo_img.width;
   }
 
   // Add velocity to xy, refer to MainThread>draw() method
@@ -54,11 +55,17 @@ class Logo {
     //rgb = color(random(256), random(256), random(256));
     rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
+  
+  public void handleCollision(float x, float y) {
+    
+  }
 
   //Draw the tinted logo and 4 corners
   private void show() {
     tint(this.rgb);
     image(logo_img, XTL, YTL);
+    noFill();
+    ellipse(xCenter, yCenter, r, r);
     fill(255, 0, 0);
     noStroke();
     ellipse(XTL, YTL, 10, 10);
