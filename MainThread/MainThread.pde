@@ -51,7 +51,7 @@ private void updateHands() {
         //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
 
-        if (PVector.dist(joint, logo.Center) < logo.r + 20) {
+        if (PVector.dist(joint, logo.Center) < logo.r) {
           logo.handleInteraction(joint, false);
         }
       }

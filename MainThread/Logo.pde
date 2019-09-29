@@ -69,7 +69,6 @@ class Logo {
   //Handle the interation between user's hand and the logo(being held and being swipped)
   public void handleInteraction(PVector collisionPoint, boolean isBeingHeld) {
     if (isBeingHeld) {
-      println("logo is being held");
       Center = collisionPoint;
     } else {
       /**
@@ -96,14 +95,14 @@ class Logo {
        */
 
       //Increase the logo's velocity by 3 after being hit
-      if (Velocity.x > 0) {
+      if (Velocity.x > 0 && Velocity.x < 10) {
         Velocity.x += 3;
-      } else {
+      } else if (Velocity.x > -10) {
         Velocity.x -= 3;
       }
-      if (Velocity.x > 0) {
+      if (Velocity.y > 0 && Velocity.y < 10) {
         Velocity.y += 3;
-      } else {
+      } else if (Velocity.y > -10) {
         Velocity.y -= 3;
       }
 
