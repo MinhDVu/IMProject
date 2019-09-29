@@ -1,27 +1,24 @@
 class Logo {
   // Coordinates of the logo's corners TL = Top Left, BL = Bottom Right, etc.
-  public float XTL, YTL, XTR, YTR, XBL, YBL, XBR, YBR;
-  //Logo's xy velocity
-  public float xVelocity, yVelocity;
-  //Reserved var for LeapMotion Integration
-  public float xCenter, yCenter, r;
+  public PVector Center, TL, TR, BL, BR;
+  //Logo's horizontal & vertical velocity and radius
+  public float xVelocity, yVelocity, r;
   //Logo's color and images
   private color rgb;
   PImage logo_img;
 
   public Logo(float x, float y) {
-    this.XTL = x;
-    this.YTL = y;
+    Center = new PVector(x, y);
     xVelocity = yVelocity = 4;
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
     r = logo_img.width;
   }
 
-  // Add velocity to xy, refer to MainThread>draw() method
+  // Add velocity to Center and re-calculate the coordinates of the corners
   public void update() {
-    XTL += xVelocity;
-    YTL -= yVelocity;
+    Center.x += xVelocity;
+    Center.y -= yVelocity;
 
     /** 
      * TL----------------TR
@@ -31,21 +28,17 @@ class Logo {
      * BL----------------BR
      */
 
-    //Update logo's center location
-    xCenter = XTL + logo_img.width/2;
-    yCenter = YTL + logo_img.height/2;
+    //Update logo's left corner location
+    TL = new PVector(Center.x - logo_img.width/2, Center.y - logo_img.height/2);
 
     //Update top right corner of the logo
-    XTR = XTL + logo_img.width;
-    YTR = YTL;
+    TR = new PVector(Center.x + logo_img.width/2, Center.y - logo_img.height/2);
 
     //Update bottom left corner
-    XBL = XTL;
-    YBL = YTL + logo_img.height;
+    BL = new PVector(Center.x - logo_img.width/2, Center.y + logo_img.height/2);
 
     //Update bottom right corner
-    XBR = XTL + logo_img.width;
-    YBR = YTL + logo_img.height;
+    BR = new PVector(Center.x + logo_img.width/2, Center.y + logo_img.height/2);
 
     show();
   }
@@ -63,15 +56,16 @@ class Logo {
   //Draw the tinted logo and 4 corners
   private void show() {
     tint(this.rgb);
-    image(logo_img, XTL, YTL);
+    image(logo_img, TL.x, TL.y);
     noFill();
-    ellipse(xCenter, yCenter, r, r);
+    stroke(0);
+    ellipse(Center.x, Center.y, r, r);
     fill(255, 0, 0);
     noStroke();
-    ellipse(XTL, YTL, 10, 10);
-    ellipse(XTR, YTR, 10, 10);
-    ellipse(XBL, YBL, 10, 10);
-    ellipse(XBR, YBR, 10, 10);
-    ellipse(xCenter, yCenter, 10, 10);
+    ellipse(TL.x, TL.y, 10, 10);
+    ellipse(TR.x, TR.y, 10, 10);
+    ellipse(BL.x, BL.y, 10, 10);
+    ellipse(BR.x, BR.y, 10, 10);
+    ellipse(Center.x, Center.y, 10, 10);
   }
 }

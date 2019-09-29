@@ -11,7 +11,7 @@ public final int THRESHOLD = 10;
 void setup() {
   size(800, 600);
   //fullScreen();
-  frameRate(60);
+  //frameRate(60);
   confetti = new ArrayList<Particle>();
   logo = new Logo(random(width), random(height));
   leap = new LeapMotion(this);
@@ -22,8 +22,7 @@ void leapOnConnect() {
 }
 
 void draw() {
-  background(255);
-  stroke(255);
+  background(0);
   drawThreshold();
   updateParticles();
   updateLogo();
@@ -36,6 +35,10 @@ private void updateHands() {
     PVector handPosition = hand.getPosition();
     visualizePoint(handPosition.x, handPosition.y);
 
+    if (hand.getPinchStrength() >= 0.9 && PVector.dist(handPosition, logo.Center) <= logo.r) {
+      logo.Center.x = handPosition.x;
+      logo.Center.y = handPosition.y;
+    }
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
       visualizePoint(fingerPosition.x, fingerPosition.y);
@@ -49,7 +52,7 @@ private void updateHands() {
         //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
         
-        if (dist(joint.x, joint.y, logo.xCenter, logo.yCenter) < logo.r) {
+        if (PVector.dist(joint, logo.Center) < logo.r) {
           print("Logo touched !");
           logo.handleCollision(joint.x, joint.y);
         }
@@ -86,36 +89,36 @@ private void updateLogo() {
   }
 
   //If logo hits right side of the screen
-  else if (logo.XTR >= width) {
+  else if (logo.TR.x >= width) {
     logo.xVelocity = -logo.xVelocity;
-    logo.XTL = width - logo.logo_img.width;
+    logo.TL.x = width - logo.logo_img.width;
     logo.updateColor();
-    addConfetti(logo.XTR, logo.YTR);
-    addConfetti(logo.XBR, logo.YBR);
+    addConfetti(logo.TR.x, logo.TR.y);
+    addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits left side of the screen
-  } else if (logo.XTL <= 0) {
+  } else if (logo.TL.x <= 0) {
     logo.xVelocity = -logo.xVelocity;
-    logo.XTL = 0;
+    logo.TL.x = 0;
     logo.updateColor();
-    addConfetti(logo.XTL, logo.YTL);
-    addConfetti(logo.XBL, logo.YBL);
+    addConfetti(logo.TL.x, logo.TL.y);
+    addConfetti(logo.BL.x, logo.BL.y);
 
     //If logo hits bottom side
-  } else if (logo.YBL >= height) {
+  } else if (logo.BL.y >= height) {
     logo.yVelocity = -logo.yVelocity;
-    logo.YTL = height - logo.logo_img.height;
+    logo.BL.y = height - logo.logo_img.height;
     logo.updateColor();
-    addConfetti(logo.XBL, logo.YBL);
-    addConfetti(logo.XBR, logo.YBR);
+    addConfetti(logo.BL.x, logo.BL.y);
+    addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits top side
-  } else if (logo.YTL <= 0) {
+  } else if (logo.TL.y <= 0) {
     logo.yVelocity = -logo.yVelocity;
-    logo.YTL = 0;
+    logo.TL.y = 0;
     logo.updateColor();
-    addConfetti(logo.XTR, logo.YTR);
-    addConfetti(logo.XTL, logo.YTL);
+    addConfetti(logo.TR.x, logo.TR.y);
+    addConfetti(logo.TL.x, logo.TL.y);
   }
 }
 
@@ -124,6 +127,7 @@ void mousePressed() {
   for (int i= 0; i < 10; i++) {
     confetti.add(new Particle(mouseX, mouseY));
   }
+  logo.handleCollision(mouseX, mouseY);
 }
 
 public void addConfetti(float x, float y) {
@@ -140,6 +144,7 @@ private void visualizePoint(float x, float y) {
 
 private void drawThreshold() {
   // Divide sections on screen where animations will behave differently
+  stroke(255);
   line(THRESHOLD, 0, THRESHOLD, height);
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
