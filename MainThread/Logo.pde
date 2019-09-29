@@ -1,15 +1,20 @@
+import java.util.*;
+
 class Logo {
   // Coordinates of the logo's corners TL = Top Left, BL = Bottom Right, etc.
   public PVector Center, TL, TR, BL, BR;
-  //Logo's horizontal & vertical velocity and radius
-  public float xVelocity, yVelocity, r;
+  //Logo's horizontal & vertical velocity
+  public PVector Velocity;
+  // Radius of the circle around the logo
+  public float r;
   //Logo's color and images
   private color rgb;
   PImage logo_img;
 
   public Logo(float x, float y) {
     Center = new PVector(x, y);
-    xVelocity = yVelocity = 4;
+    //Velocity = new PVector(random(-5, 5), random(-5, 5));
+    Velocity = new PVector(4, 4);
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
     r = logo_img.width;
@@ -17,8 +22,20 @@ class Logo {
 
   // Add velocity to Center and re-calculate the coordinates of the corners
   public void update() {
-    Center.x += xVelocity;
-    Center.y -= yVelocity;
+    
+    //Stablizes the movement speed of the logo
+    if (Velocity.x > 3) { 
+      Velocity.x -= 0.1;
+    } else if (Velocity.x < -3) {
+      Velocity.x += 0.1;
+    }
+    if (Velocity.y > 3) { 
+      Velocity.y-= 0.1;
+    } else if (Velocity.y < -3) {
+      Velocity.y += 0.1;
+    }
+
+    Center.add(Velocity);
 
     /** 
      * TL----------------TR
@@ -48,9 +65,76 @@ class Logo {
     //rgb = color(random(256), random(256), random(256));
     rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
-  
-  public void handleCollision(float x, float y) {
-    
+
+  //Handle the interation between user's hand and the logo(being held and being swipped)
+  public void handleInteraction(PVector collisionPoint, boolean isBeingHeld) {
+    if (isBeingHeld) {
+      println("logo is being held");
+      Center = collisionPoint;
+    } else {
+      /**
+       List<Float> list = new LinkedList<Float>();
+       list.add(PVector.dist(collisionPoint, TL));
+       list.add(PVector.dist(collisionPoint, TR));
+       list.add(PVector.dist(collisionPoint, BL));
+       list.add(PVector.dist(collisionPoint, BR));
+       float min = Collections.min(list);
+       
+       // Switch case for processing closest corner
+       if (min == list.get(0)) {
+       println("touched top left corner");
+       }
+       else if (min == list.get(1)) {
+       println("touched top right corner");
+       }
+       else if (min == list.get(2)) {
+       println("touched bottom left corner");
+       }
+       else if (min == list.get(3)) {
+       println("touched bottom right corner");
+       }
+       */
+
+      //Increase the logo's velocity by 3 after being hit
+      if (Velocity.x > 0) {
+        Velocity.x += 3;
+      } else {
+        Velocity.x -= 3;
+      }
+      if (Velocity.x > 0) {
+        Velocity.y += 3;
+      } else {
+        Velocity.y -= 3;
+      }
+
+      //Constructs a squared triangle with the vector from Center to collisionPoint as the hypotenuse
+      //By calculating the tan of the 2 sides, we can determine from which angle/radiant the logo was interacted with
+      float a = Center.x - collisionPoint.x;
+      float b = Center.y - collisionPoint.y;
+      //atan2() returns from -PI to PI. Top of the circle is 0, left side is 0->PI counter-clockwise, right side is 0->-PI clockwise
+      float tan = atan2(a, b);
+
+      //If the logo was hit from the left
+      if (tan > 0) {
+        //Divide the half-circle into 3 parts and decide the direction of movements based on the tan radiants
+        if (tan < Math.PI/3) {
+          Velocity = new PVector(abs(Velocity.x), abs(Velocity.y));
+        } else if (tan > Math.PI/3 && tan < Math.PI*2/3) {
+          Velocity = new PVector(abs(Velocity.x), Velocity.y);
+        } else {
+          Velocity = new PVector(abs(Velocity.x), -abs(Velocity.y));
+        }
+      //If the logo was hit from the right
+      } else {
+        if (tan > Math.PI/3) {
+          Velocity = new PVector(-abs(Velocity.x), abs(Velocity.y));
+        } else if (tan < Math.PI/3 && tan > Math.PI*(-2)/3) {
+          Velocity = new PVector(-abs(Velocity.x), Velocity.y);
+        } else {
+          Velocity = new PVector(-abs(Velocity.x), -abs(Velocity.y));
+        }
+      }
+    }
   }
 
   //Draw the tinted logo and 4 corners
@@ -62,6 +146,7 @@ class Logo {
     ellipse(Center.x, Center.y, r, r);
     fill(255, 0, 0);
     noStroke();
+    //TODO: Remove these points
     ellipse(TL.x, TL.y, 10, 10);
     ellipse(TR.x, TR.y, 10, 10);
     ellipse(BL.x, BL.y, 10, 10);

@@ -11,9 +11,9 @@ public final int THRESHOLD = 10;
 void setup() {
   size(800, 600);
   //fullScreen();
-  //frameRate(60);
+  //frameRate(5);
   confetti = new ArrayList<Particle>();
-  logo = new Logo(random(width), random(height));
+  logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
 }
 
@@ -22,11 +22,11 @@ void leapOnConnect() {
 }
 
 void draw() {
-  background(0);
+  background(255);
   drawThreshold();
-  updateParticles();
-  updateLogo();
   updateHands();
+  updateLogo();
+  updateParticles();
 }
 
 private void updateHands() {
@@ -35,30 +35,32 @@ private void updateHands() {
     PVector handPosition = hand.getPosition();
     visualizePoint(handPosition.x, handPosition.y);
 
-    if (hand.getPinchStrength() >= 0.9 && PVector.dist(handPosition, logo.Center) <= logo.r) {
-      logo.Center.x = handPosition.x;
-      logo.Center.y = handPosition.y;
+    //Detect interaction between user's hands and the logo. If user is grabbing, call handleInteraction with a true flag
+    if (PVector.dist(handPosition, logo.Center) <= logo.r && hand.getGrabStrength() >= 0.5) {
+      logo.handleInteraction(handPosition, true);
     }
+
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
       visualizePoint(fingerPosition.x, fingerPosition.y);
-      //Default draw method with 3px in radius for each joints, can't be used for our purpose but good to have during dev process
-      //finger.draw();
-
+      
+      //Get finger bones and visualize them on screen. If joint in bones touches the logo's circle, handle the collision
       bones = new Bone[]{finger.getBone(0), finger.getBone(1), finger.getBone(2), finger.getBone(3)};
-
       for (Bone bone : bones ) {
         PVector joint = bone.getPrevJoint();
         //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
-        
-        if (PVector.dist(joint, logo.Center) < logo.r) {
-          print("Logo touched !");
-          logo.handleCollision(joint.x, joint.y);
+
+        if (PVector.dist(joint, logo.Center) < logo.r + 20) {
+          logo.handleInteraction(joint, false);
         }
       }
     }
   }
+}
+
+void leapOnSwipeGesture(SwipeGesture g, int state) {
+  println("swiped");
 }
 
 private void updateParticles() {
@@ -79,43 +81,43 @@ private void updateLogo() {
   /** 
    * TL----------------TR
    * |                  |
-   * |     xyCenter     |
+   * |      Center      |
    * |                  |
    * BL----------------BR
    */
 
-  //Reserved space of corner detection
-  if (false) {
+  if (1 < 0) {
+    //TODO: Corner Detection Algorithm
   }
 
   //If logo hits right side of the screen
   else if (logo.TR.x >= width) {
-    logo.xVelocity = -logo.xVelocity;
-    logo.TL.x = width - logo.logo_img.width;
+    logo.Velocity.x = -logo.Velocity.x;
+    logo.Center.x = width - logo.logo_img.width/2;
     logo.updateColor();
     addConfetti(logo.TR.x, logo.TR.y);
     addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits left side of the screen
   } else if (logo.TL.x <= 0) {
-    logo.xVelocity = -logo.xVelocity;
-    logo.TL.x = 0;
+    logo.Velocity.x = -logo.Velocity.x;
+    logo.Center.x = logo.logo_img.width/2;
     logo.updateColor();
     addConfetti(logo.TL.x, logo.TL.y);
     addConfetti(logo.BL.x, logo.BL.y);
 
     //If logo hits bottom side
   } else if (logo.BL.y >= height) {
-    logo.yVelocity = -logo.yVelocity;
-    logo.BL.y = height - logo.logo_img.height;
+    logo.Velocity.y = -logo.Velocity.y;
+    logo.Center.y = height - logo.logo_img.height/2;
     logo.updateColor();
     addConfetti(logo.BL.x, logo.BL.y);
     addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits top side
   } else if (logo.TL.y <= 0) {
-    logo.yVelocity = -logo.yVelocity;
-    logo.TL.y = 0;
+    logo.Velocity.y = -logo.Velocity.y;
+    logo.Center.y = logo.logo_img.height/2;
     logo.updateColor();
     addConfetti(logo.TR.x, logo.TR.y);
     addConfetti(logo.TL.x, logo.TL.y);
@@ -124,10 +126,8 @@ private void updateLogo() {
 
 // Emulate collision events when the logo hits the screen
 void mousePressed() {
-  for (int i= 0; i < 10; i++) {
-    confetti.add(new Particle(mouseX, mouseY));
-  }
-  logo.handleCollision(mouseX, mouseY);
+  PVector foo = new PVector(mouseX, mouseY);
+  logo.handleInteraction(foo, false);
 }
 
 public void addConfetti(float x, float y) {
