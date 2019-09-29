@@ -1,7 +1,6 @@
 import de.voidplus.leapmotion.*;
 // comment
 static ArrayList<Particle> confetti;
-
 static  Logo logo;
 LeapMotion leap;
 Bone[] bones;
@@ -13,10 +12,16 @@ void setup() {
   //fullScreen();
   frameRate(60);
   confetti = new ArrayList<Particle>();
-  logo = new Logo(random(width), random(height));
+  logo = new Logo(random(width), random(height),4.0,4.0);
   leap = new LeapMotion(this);
+  reset();
 }
+void reset() {
+  background(0);
 
+ // interactiveCollisions.add(new CollisionParticle(width, height, 
+  //    5, 5, 80, 255,255, 255));
+}
 void leapOnConnect() {
   println("Leap Motion Connected");
 }
@@ -28,6 +33,8 @@ void draw() {
   updateParticles();
   updateLogo();
   updateHands();
+ 
+  //drawAndUpdate();
 }
 
 private void updateHands() {
@@ -51,7 +58,7 @@ private void updateHands() {
         
         if (dist(joint.x, joint.y, logo.xCenter, logo.yCenter) < logo.r) {
           print("Logo touched !");
-          logo.handleCollision(joint.x, joint.y);
+          logo. collisionUpdate(joint.x, joint.y);
         }
       }
     }

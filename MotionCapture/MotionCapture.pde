@@ -15,10 +15,8 @@ void setup() {
 void reset() {
   background(0);
 
-  for (int i = 0; i < 1; i++) {
-    interactiveCollisions.add(new CollisionParticle(random(0, width), random(0, height), 
-      random(-5, 5), random(-5, 5), random(10, 80), random(0, 255), random(0, 255), random(0, 255)));
-  }
+  interactiveCollisions.add(new CollisionParticle(width, height, 
+      5, 5, 80, 255,255, 255));
 }
 void draw() {
   background(0);
@@ -26,54 +24,8 @@ void draw() {
 }
 
 void drawAndUpdate() {
-
-  collide();
   for (int i = 0; i < interactiveCollisions.size(); i ++) {
     interactiveCollisions.get(i).update();
     interactiveCollisions.get(i).display();
-  }
-}
-
-void collide() {
-
-  if (interactiveCollisions.size() > 1) {
-    for (int i = 0; i < interactiveCollisions.size() - 1; i ++) {
-      for (int j = i + 1; j < interactiveCollisions.size(); j ++) { 
-        float dx = interactiveCollisions.get(i).x - interactiveCollisions.get(j).x;
-        float dy = interactiveCollisions.get(i).y - interactiveCollisions.get(j).y;
-        float distance = abs(sqrt(dx*dx + dy*dy));
-        float bump = interactiveCollisions.get(i).size/2 + interactiveCollisions.get(j).size/2;
-        if (distance <= bump) {
-          float theta = atan2(dy, dx);
-          float endX = interactiveCollisions.get(i).x + cos(theta)*bump;
-          float endY = interactiveCollisions.get(i).y + sin(theta)*bump;
-          interactiveCollisions.get(i).vx = (endX - interactiveCollisions.get(j).x)/(interactiveCollisions.get(i).size);
-          interactiveCollisions.get(i).vy = (endY - interactiveCollisions.get(j).y)/(interactiveCollisions.get(i).size);
-          interactiveCollisions.get(j).vx = (interactiveCollisions.get(j).x - endX)/(interactiveCollisions.get(j).size);
-          interactiveCollisions.get(j).vy = (interactiveCollisions.get(j).y - endY)/(interactiveCollisions.get(j).size);
-        }
-      }
-    }
-  }
-
-
-  if (interactiveCollisions.size() > 1) {
-    for (int i = 0; i < interactiveCollisions.size() - 1; i ++) {
-      for (int j = i + 1; j < interactiveCollisions.size(); j ++) { 
-        float dx = interactiveCollisions.get(i).x - interactiveCollisions.get(j).x;
-        float dy = interactiveCollisions.get(i).y - interactiveCollisions.get(j).y;
-        float distance = abs(sqrt(dx*dx + dy*dy));
-        float bump = interactiveCollisions.get(i).size/2 + interactiveCollisions.get(j).size/2;
-        if (distance <= bump) {
-          float theta = atan2(dy, dx);
-          float endX = interactiveCollisions.get(i).x + cos(theta)*bump;
-          float endY = interactiveCollisions.get(i).y + sin(theta)*bump;
-          interactiveCollisions.get(i).vx = (endX - interactiveCollisions.get(j).x)/(interactiveCollisions.get(i).size);
-          interactiveCollisions.get(i).vy = (endY - interactiveCollisions.get(j).y)/(interactiveCollisions.get(i).size);
-          interactiveCollisions.get(j).vx = (interactiveCollisions.get(j).x - endX)/(interactiveCollisions.get(j).size);
-          interactiveCollisions.get(j).vy = (interactiveCollisions.get(j).y - endY)/(interactiveCollisions.get(j).size);
-        }
-      }
-    }
   }
 }

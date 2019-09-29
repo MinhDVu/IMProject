@@ -20,20 +20,10 @@ class CollisionParticle {
   }
 
   void update() {
-    // These are the variables we'll need to find the average X and Y
-    float sumX = 0;
-    float sumY = 0;
-    int motionCount = 0; 
-
-    // average location is total location divided by the number of motion pixels.
-    float avgX = sumX / motionCount; 
-    float avgY = sumY / motionCount; 
+    
 
     // Draw a circle based on average motion
-    smooth();
-    noStroke();
-    fill(150);
-    ellipse(avgX, avgY, 16, 16);
+ 
 
     float dist = size;
     if (dist >= abs(x - mouseX) && dist >= abs(y - mouseY)) {
@@ -45,15 +35,7 @@ class CollisionParticle {
       vx = (endX - mouseX)/(size);
       vy = (endY - mouseY)/(size);
     }
-    if (dist >= abs(x - avgX) && dist >= abs(y - avgY)) {
-      float dx = x - avgX;
-      float dy = y - avgY;
-      float theta = atan2(dy, dx);
-      float endX = x + cos(theta)*size;
-      float endY = y + sin(theta)*size;
-      vx = (endX - avgX)/(size);
-      vy = (endY - avgY)/(size);
-    }
+
     if (vx > 0) {
       if (x >= width-1) {
         if (vx > 0) {

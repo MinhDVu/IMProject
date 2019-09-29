@@ -9,19 +9,24 @@ class Logo {
   private color rgb;
   PImage logo_img;
 
-  public Logo(float x, float y) {
-    this.XTL = x;
-    this.YTL = y;
-    xVelocity = yVelocity = 4;
+  public Logo(float XTL, float YTL, float XTR, float YTR) {
+    this.XTL = XTL;
+    this.YTL = YTL;
+    this.XTR = XTR;
+    this.YTR = YTR;
+    xVelocity = yVelocity = 10 ;
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
     r = logo_img.width;
   }
+  void edge_check() {
+    //If a wall is hit, invert velocities
+    if (XTL >= width-1 || XTL <= 0) XTR = -XTR; 
+    if (YTL >= height-1 || YTL <= 0) YTR = -YTR;
+  }
 
   // Add velocity to xy, refer to MainThread>draw() method
   public void update() {
-    XTL += xVelocity;
-    YTL -= yVelocity;
 
     /** 
      * TL----------------TR
@@ -30,7 +35,14 @@ class Logo {
      * |                  |
      * BL----------------BR
      */
-
+    collisionUpdate((int)XTL, (int)YTL );
+    collisionUpdate(mouseX, mouseY );
+    if (abs(xVelocity) > 0 || abs(yVelocity) > 0) {
+      edge_check();
+      
+    }
+    XTL += xVelocity;
+    YTL -= yVelocity;
     //Update logo's center location
     xCenter = XTL + logo_img.width/2;
     yCenter = YTL + logo_img.height/2;
@@ -50,15 +62,31 @@ class Logo {
     show();
   }
 
+
+  void collisionUpdate(float x_val, float y_val)
+  {  
+
+    float dist = XBL;
+    if (dist >= abs(XTL - x_val) && dist >= abs(YTL - y_val)) {
+      float dx = XTL - x_val;
+      float dy = YTL - y_val;
+      float theta = atan2(dy, dx);
+      float endX = XTL + cos(theta)*XBL;
+      float endY = YTL + sin(theta)*XBL;
+      xVelocity = (endX - x_val)/(XBL);
+      yVelocity = (endY - y_val)/(XBL);
+    }
+  }
+
+
+
+
   //Assign a random color for the logo
   public void updateColor() {
     //rgb = color(random(256), random(256), random(256));
     rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
-  
-  public void handleCollision(float x, float y) {
-    
-  }
+
 
   //Draw the tinted logo and 4 corners
   private void show() {
