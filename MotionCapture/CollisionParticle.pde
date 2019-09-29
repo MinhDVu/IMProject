@@ -1,32 +1,24 @@
 class CollisionParticle {
-  float x;
-  float y;
-  float vx;
-  float vy;
+  //The logo's Coordinates
+  float x, y;
+  //Logo's Velocity
+  float vx, vy;
+  //Logo's radius
   float size;
-  float r;
-  float g;
-  float b;
+  //Logos color
+  color rgb;
 
-  CollisionParticle(float x, float y, float vx, float vy, float size, float r, float g, float b) {
+  CollisionParticle(float x, float y, float vx, float vy, float size) {
     this.x = x; 
     this.y = y;
     this.vx = vx;
     this.vy = vy;
     this.size = size;
-    this.r = r;
-    this.g = g;
-    this.b = b;
+    this.rgb = color(random(255), random(255), random(255));
   }
 
   void update() {
-    
-
-    // Draw a circle based on average motion
- 
-
-    float dist = size;
-    if (dist >= abs(x - mouseX) && dist >= abs(y - mouseY)) {
+    if (size >= abs(x - mouseX) && size >= abs(y - mouseY)) {
       float dx = x - mouseX;
       float dy = y - mouseY;
       float theta = atan2(dy, dx);
@@ -37,49 +29,49 @@ class CollisionParticle {
     }
 
     if (vx > 0) {
-      if (x >= width-1) {
+      if (x >= width - size/2) {
         if (vx > 0) {
           vx = -vx;
         }
       }
-      if (x <=0) {
+      if (x <= size/2) {
         if (vx < 0) {
           vx = vx;
         }
       }
     } else {
-      if (x >= width- 1) {
+      if (x >= width - size/2) {
         if (vx > 0) {
           vx = vx;
         }
       }
-      if (x <=0) {
+      if (x <= size/2) {
         if (vx < 0) {
           vx = -vx;
         }
       }
     }
     if (vy > 0) {
-      if (y >= height -1) {
+      if (y >= height - size/2) {
         if (vy > 0) {
           vy = -vy;
-          y = height - 1;
+          y = height - size/2;
         }
       }
-      if (y <=0) {
+      if (y <= size/2) {
         if (vy < 0) {
           vy = vy;
         }
       }
     } else {
-      if (y >= height -1) {
+      if (y >= height - size/2) {
         if (vy > 0) {
           vy = vy;
-          y = height - 1;
+          y = height - size/2;
         }
       }
     }
-    if (y <=0) {
+    if (y <= size/2) {
       if (vy < 0) {
         vy = -vy;
       }
@@ -90,8 +82,8 @@ class CollisionParticle {
 
 
   void display() {
-    stroke(r, g, b);
-    fill(r, g, b);
+    noStroke();
+    fill(rgb);
     ellipse(x, y, size, size);
   }
 }
