@@ -19,11 +19,6 @@ class Logo {
     logo_img = loadImage("dvd_logo.png");
     r = logo_img.width;
   }
-  void edge_check() {
-    //If a wall is hit, invert velocities
-    if (XTL >= width-1 || XTL <= 0) XTR = -XTR; 
-    if (YTL >= height-1 || YTL <= 0) YTR = -YTR;
-  }
 
   // Add velocity to Center and re-calculate the coordinates of the corners
   public void update() {
@@ -49,11 +44,6 @@ class Logo {
      * |                  |
      * BL----------------BR
      */
-    collisionUpdate((int)XTL, (int)YTL );
-    collisionUpdate(mouseX, mouseY );
-    if (XTR >= width || XTL <= 0 || YBL >= height ||logo.YTL <= 0){
-      edge_check();
-    }
 
     //Update logo's left corner location
     TL = new PVector(Center.x - logo_img.width/2, Center.y - logo_img.height/2);
@@ -67,23 +57,10 @@ class Logo {
     //Update bottom right corner
     BR = new PVector(Center.x + logo_img.width/2, Center.y + logo_img.height/2);
 
-show();
-}
-
-
-void collisionUpdate(float x_val, float y_val)
-{  
-
-  float dist = XBL;
-  if (dist >= abs(XTL - x_val) && dist >= abs(YTL - y_val)) {
-    float dx = XTL - x_val;
-    float dy = YTL - y_val;
-    float theta = atan2(dy, dx);
-    float endX = XTL + cos(theta)*XBL;
-    float endY = YTL + sin(theta)*XBL;
-    xVelocity = (endX - x_val)/(XBL);
-    yVelocity = (endY - y_val)/(XBL);
+    show();
   }
+
+
 
   //Handle the interation between user's hand and the logo(being held and being swipped)
   public void handleInteraction(PVector collisionPoint, boolean isBeingHeld) {
@@ -155,7 +132,7 @@ void collisionUpdate(float x_val, float y_val)
       }
     }
   }
-  
+
   public void hitCorner() {
     this.Velocity.x = -(this.Velocity.x);
     this.Velocity.y = -(this.Velocity.y);
@@ -177,36 +154,11 @@ void collisionUpdate(float x_val, float y_val)
     //ellipse(BR.x, BR.y, 10, 10);
     //ellipse(Center.x, Center.y, 10, 10);
   }
-  if (YTL <=0) {
-    if (YTR < 0) {
-      YTR = -YTR;
-    }
+
+
+  //Assign a random color for the logo
+  public void updateColor() {
+    //rgb = color(random(256), random(256), random(256));
+    rgb = colorsR2[(int)random(0, colorsR2.length)];
   }
-}
-
-
-
-
-//Assign a random color for the logo
-public void updateColor() {
-  //rgb = color(random(256), random(256), random(256));
-  rgb = colorsR2[(int)random(0, colorsR2.length)];
-}
-
-
-//Draw the tinted logo and 4 corners
-private void show() {
-  tint(this.rgb);
-  image(logo_img, XTL, YTL);
-  //noFill();
-  //ellipse(xCenter, yCenter, r, r);
-  //fill(255, 0, 0);
-  //noStroke();
-  //ellipse(XTL, YTL, 10, 10);
-  //ellipse(XTR, YTR, 10, 10);
-  //ellipse(XBL, YBL, 10, 10);
-  //ellipse(XBR, YBR, 10, 10);
-  //ellipse(xCenter, yCenter, 10, 10);
-}
-
 }
