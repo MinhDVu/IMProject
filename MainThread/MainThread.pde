@@ -92,6 +92,7 @@ private void updateLogo() {
   //If lofo hits top left corner
   if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
     addConfetti(logo.TL.x , logo.TL.y);
+    logo.hitCorner();
     logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
     logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
     logo.updateColor();
