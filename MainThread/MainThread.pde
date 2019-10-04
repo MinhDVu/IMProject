@@ -10,9 +10,9 @@ public final int THRESHOLD = 10;
 void setup() {
   size(800, 600);
   //fullScreen();
-  frameRate(60);
+  //frameRate(5);
   confetti = new ArrayList<Particle>();
-  logo = new Logo(random(width), random(height),4.0,4.0);
+  logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
   reset();
 }
@@ -27,42 +27,43 @@ void leapOnConnect() {
 }
 
 void draw() {
-  background(255);
-  stroke(255);
+  background(0);
   drawThreshold();
-  updateParticles();
-  updateLogo();
   updateHands();
- 
-  //drawAndUpdate();
+  updateLogo();
+  updateParticles();
 }
 
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
-    hand.draw();
+    //hand.draw();
     PVector handPosition = hand.getPosition();
     visualizePoint(handPosition.x, handPosition.y);
+
+    //Detect interaction between user's hands and the logo. If user is grabbing, call handleInteraction with a true flag
+    if (PVector.dist(handPosition, logo.Center) <= logo.r && hand.getGrabStrength() >= 0.5) {
+      logo.handleInteraction(handPosition, true);
+    }
 
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
       visualizePoint(fingerPosition.x, fingerPosition.y);
-      //Default draw method with 3px in radius for each joints, can't be used for our purpose but good to have during dev process
-      //finger.draw();
 
+      //Get finger bones and visualize them on screen. If joint in bones touches the logo's circle, handle the collision
       bones = new Bone[]{finger.getBone(0), finger.getBone(1), finger.getBone(2), finger.getBone(3)};
-
       for (Bone bone : bones ) {
         PVector joint = bone.getPrevJoint();
-        //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
-        
-        if (dist(joint.x, joint.y, logo.xCenter, logo.yCenter) < logo.r) {
-          print("Logo touched !");
-          logo. collisionUpdate(joint.x, joint.y);
+        if (PVector.dist(joint, logo.Center) < logo.r) {
+          logo.handleInteraction(joint, false);
         }
       }
     }
   }
+}
+
+void leapOnSwipeGesture(SwipeGesture g, int state) {
+  println("swiped");
 }
 
 private void updateParticles() {
@@ -83,54 +84,72 @@ private void updateLogo() {
   /** 
    * TL----------------TR
    * |                  |
-   * |     xyCenter     |
+   * |      Center      |
    * |                  |
    * BL----------------BR
    */
 
-  //Reserved space of corner detection
-  if (false) {
-  }
-
-  //If logo hits right side of the screen
-  else if (logo.XTR >= width) {
-    logo.xVelocity = -logo.xVelocity;
-    logo.XTL = width - logo.logo_img.width;
+  //If lofo hits top left corner
+  if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
+    addConfetti(logo.TL.x , logo.TL.y);
+    logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
+    logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
     logo.updateColor();
-    addConfetti(logo.XTR, logo.YTR);
-    addConfetti(logo.XBR, logo.YBR);
+  }
+  //If logo hits top right corner 
+  else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
+    addConfetti(logo.TR.x , logo.TR.y);
+    logo.hitCorner();
+    logo.Center.x = width - logo.logo_img.width/2  - THRESHOLD;
+    logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
+    logo.updateColor();
+  }
+  //If logo hits bottom left corner 
+  else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
+    addConfetti(logo.BL.x , logo.BL.y);
+    logo.hitCorner();
+    logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
+    logo.Center.y = height - logo.logo_img.height/2  - THRESHOLD;
+    logo.updateColor();
+  }
+  //If logo hits bottom right corner 
+  else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
+    addConfetti(logo.BR.x , logo.BR.y);
+    logo.hitCorner();
+    logo.Center.x = width - logo.logo_img.width/2 - THRESHOLD;
+    logo.Center.y = height - logo.logo_img.height/2 - THRESHOLD;
+    logo.updateColor();
+  }
+  //If logo hits right side of the screen
+  else if (logo.TR.x >= width) {
+    logo.Velocity.x = -logo.Velocity.x;
+    logo.Center.x = width - logo.logo_img.width/2;
+    logo.updateColor();
 
     //If logo hits left side of the screen
-  } else if (logo.XTL <= 0) {
-    logo.xVelocity = -logo.xVelocity;
-    logo.XTL = 0;
+  } else if (logo.TL.x <= 0) {
+    logo.Velocity.x = -logo.Velocity.x;
+    logo.Center.x = logo.logo_img.width/2;
     logo.updateColor();
-    addConfetti(logo.XTL, logo.YTL);
-    addConfetti(logo.XBL, logo.YBL);
 
     //If logo hits bottom side
-  } else if (logo.YBL >= height) {
-    logo.yVelocity = -logo.yVelocity;
-    logo.YTL = height - logo.logo_img.height;
+  } else if (logo.BL.y >= height) {
+    logo.Velocity.y = -logo.Velocity.y;
+    logo.Center.y = height - logo.logo_img.height/2;
     logo.updateColor();
-    addConfetti(logo.XBL, logo.YBL);
-    addConfetti(logo.XBR, logo.YBR);
 
     //If logo hits top side
-  } else if (logo.YTL <= 0) {
-    logo.yVelocity = -logo.yVelocity;
-    logo.YTL = 0;
+  } else if (logo.TL.y <= 0) {
+    logo.Velocity.y = -logo.Velocity.y;
+    logo.Center.y = logo.logo_img.height/2;
     logo.updateColor();
-    addConfetti(logo.XTR, logo.YTR);
-    addConfetti(logo.XTL, logo.YTL);
   }
 }
 
 // Emulate collision events when the logo hits the screen
 void mousePressed() {
-  for (int i= 0; i < 10; i++) {
-    confetti.add(new Particle(mouseX, mouseY));
-  }
+  PVector foo = new PVector(mouseX, mouseY);
+  logo.handleInteraction(foo, false);
 }
 
 public void addConfetti(float x, float y) {
@@ -147,6 +166,7 @@ private void visualizePoint(float x, float y) {
 
 private void drawThreshold() {
   // Divide sections on screen where animations will behave differently
+  stroke(255);
   line(THRESHOLD, 0, THRESHOLD, height);
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
