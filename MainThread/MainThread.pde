@@ -22,7 +22,7 @@ void leapOnConnect() {
 }
 
 void draw() {
-  background(255);
+  background(0);
   drawThreshold();
   updateHands();
   updateLogo();
@@ -31,7 +31,7 @@ void draw() {
 
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
-    hand.draw();
+    //hand.draw();
     PVector handPosition = hand.getPosition();
     visualizePoint(handPosition.x, handPosition.y);
 
@@ -43,14 +43,12 @@ private void updateHands() {
     for (Finger finger : hand.getFingers()) {
       PVector fingerPosition = finger.getPosition();
       visualizePoint(fingerPosition.x, fingerPosition.y);
-      
+
       //Get finger bones and visualize them on screen. If joint in bones touches the logo's circle, handle the collision
       bones = new Bone[]{finger.getBone(0), finger.getBone(1), finger.getBone(2), finger.getBone(3)};
       for (Bone bone : bones ) {
         PVector joint = bone.getPrevJoint();
-        //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
-
         if (PVector.dist(joint, logo.Center) < logo.r) {
           logo.handleInteraction(joint, false);
         }
@@ -86,41 +84,60 @@ private void updateLogo() {
    * BL----------------BR
    */
 
-  if (1 < 0) {
-    //TODO: Corner Detection Algorithm
+  //If lofo hits top left corner
+  if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
+    addConfetti(logo.TL.x , logo.TL.y);
+    logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
+    logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
+    logo.updateColor();
   }
-
+  //If logo hits top right corner 
+  else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
+    addConfetti(logo.TR.x , logo.TR.y);
+    logo.hitCorner();
+    logo.Center.x = width - logo.logo_img.width/2  - THRESHOLD;
+    logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
+    logo.updateColor();
+  }
+  //If logo hits bottom left corner 
+  else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
+    addConfetti(logo.BL.x , logo.BL.y);
+    logo.hitCorner();
+    logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
+    logo.Center.y = height - logo.logo_img.height/2  - THRESHOLD;
+    logo.updateColor();
+  }
+  //If logo hits bottom right corner 
+  else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
+    addConfetti(logo.BR.x , logo.BR.y);
+    logo.hitCorner();
+    logo.Center.x = width - logo.logo_img.width/2 - THRESHOLD;
+    logo.Center.y = height - logo.logo_img.height/2 - THRESHOLD;
+    logo.updateColor();
+  }
   //If logo hits right side of the screen
   else if (logo.TR.x >= width) {
     logo.Velocity.x = -logo.Velocity.x;
     logo.Center.x = width - logo.logo_img.width/2;
     logo.updateColor();
-    addConfetti(logo.TR.x, logo.TR.y);
-    addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits left side of the screen
   } else if (logo.TL.x <= 0) {
     logo.Velocity.x = -logo.Velocity.x;
     logo.Center.x = logo.logo_img.width/2;
     logo.updateColor();
-    addConfetti(logo.TL.x, logo.TL.y);
-    addConfetti(logo.BL.x, logo.BL.y);
 
     //If logo hits bottom side
   } else if (logo.BL.y >= height) {
     logo.Velocity.y = -logo.Velocity.y;
     logo.Center.y = height - logo.logo_img.height/2;
     logo.updateColor();
-    addConfetti(logo.BL.x, logo.BL.y);
-    addConfetti(logo.BR.x, logo.BR.y);
 
     //If logo hits top side
   } else if (logo.TL.y <= 0) {
     logo.Velocity.y = -logo.Velocity.y;
     logo.Center.y = logo.logo_img.height/2;
     logo.updateColor();
-    addConfetti(logo.TR.x, logo.TR.y);
-    addConfetti(logo.TL.x, logo.TL.y);
   }
 }
 

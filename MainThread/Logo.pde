@@ -22,7 +22,7 @@ class Logo {
 
   // Add velocity to Center and re-calculate the coordinates of the corners
   public void update() {
-    
+
     //Stablizes the movement speed of the logo
     if (Velocity.x > 3) { 
       Velocity.x -= 0.1;
@@ -70,6 +70,7 @@ class Logo {
   public void handleInteraction(PVector collisionPoint, boolean isBeingHeld) {
     if (isBeingHeld) {
       Center = collisionPoint;
+      Velocity = new PVector(0, 0);
     } else {
       /**
        List<Float> list = new LinkedList<Float>();
@@ -123,7 +124,7 @@ class Logo {
         } else {
           Velocity = new PVector(abs(Velocity.x), -abs(Velocity.y));
         }
-      //If the logo was hit from the right
+        //If the logo was hit from the right
       } else {
         if (tan > Math.PI/3) {
           Velocity = new PVector(-abs(Velocity.x), abs(Velocity.y));
@@ -135,6 +136,11 @@ class Logo {
       }
     }
   }
+  
+  public void hitCorner() {
+    this.Velocity.x = -(this.Velocity.x);
+    this.Velocity.y = -(this.Velocity.y);
+  }
 
   //Draw the tinted logo and 4 corners
   private void show() {
@@ -142,14 +148,14 @@ class Logo {
     image(logo_img, TL.x, TL.y);
     noFill();
     stroke(0);
-    ellipse(Center.x, Center.y, r, r);
+    //ellipse(Center.x, Center.y, r, r);
     fill(255, 0, 0);
     noStroke();
-    //TODO: Remove these points
-    ellipse(TL.x, TL.y, 10, 10);
-    ellipse(TR.x, TR.y, 10, 10);
-    ellipse(BL.x, BL.y, 10, 10);
-    ellipse(BR.x, BR.y, 10, 10);
-    ellipse(Center.x, Center.y, 10, 10);
+    ////TODO: Remove these points
+    //ellipse(TL.x, TL.y, 10, 10);
+    //ellipse(TR.x, TR.y, 10, 10);
+    //ellipse(BL.x, BL.y, 10, 10);
+    //ellipse(BR.x, BR.y, 10, 10);
+    //ellipse(Center.x, Center.y, 10, 10);
   }
 }
