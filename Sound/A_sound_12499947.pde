@@ -70,7 +70,11 @@ void keyPressed(){
     else{
       flag++;
       timeInterval = getTimeString();
-      pace = 2.5 - map(getTime(),10,700,0.1,2.4);
+      float t = getTime();
+      if(t > 300){
+        t = 300;
+      }
+      pace = 2.5 - map(t,10,300,0.1,2.4);
       sw.stop();
       sw.start();
     }
