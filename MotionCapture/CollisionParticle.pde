@@ -1,6 +1,6 @@
 import java.util.*;
 
-//PImage dvd;
+
 class CollisionParticle {
   float x;
   float y;
@@ -10,6 +10,7 @@ class CollisionParticle {
   float r;
   float g;
   float b;
+  PImage dvd;
 
   CollisionParticle(float x, float y, float vx, float vy, float size, float r, float g, float b) {
     this.x = x; 
@@ -20,27 +21,27 @@ class CollisionParticle {
     this.r = r;
     this.g = g;
     this.b = b;
+    dvd = loadImage("dvd_logo.png");
   }
 
   void update() {
-  updateCollision(mouseX, mouseY);
-  //dvd = loadImage("dvd_logo");
+    updateCollision(mouseX, mouseY);
+
     // Draw a circle based on average motion
   }
-  void edge_check(){
+  void edge_check() {
     //If a wall is hit, invert velocities
-    if(x >= width-1 || x <= 0) vx = -vx; 
-    if(y >= height-1 || y <= 0) vy = -vy;
+    if (x >= width-1 || x <= 0) vx = -vx; 
+    if (y >= height-1 || y <= 0) vy = -vy;
   }
 
   void updateCollision( float x_val, float y_val)
   {
-    //int flag = 0;
+    int flag = 0;
     float dist = size;
     if (dist >= abs(x - x_val) && dist >= abs(y - y_val)) {
-       
-      print("touched ");
-   
+      print("touched ");   
+      flag = 1;
       float dx = x - x_val;
       float dy = y - y_val;
       float theta = atan2(dy, dx);
@@ -48,8 +49,7 @@ class CollisionParticle {
       float endY = y + sin(theta)*size;
       vx = (endX - x_val)/(size*0.6);
       vy = (endY - y_val)/(size*0.8);
-    }
-    else {
+    } else {
       x += vx;
       y += vy;
     }
@@ -102,7 +102,11 @@ class CollisionParticle {
         vy = -vy;
       }
     }
-   
+    //if ( flag == 1)
+    //{
+    //   x -= vx;
+    //   y -= vy;
+    //}
     x += vx;
     y += vy;
     //if ( y == height )
@@ -113,8 +117,8 @@ class CollisionParticle {
   void display() {
     stroke(r, g, b);
     fill(r, g, b);
-    rect(x, y, size+20, size );
-    //image(dvd,x,y);
+    //rect(x, y, size+20, size );
+    image(dvd, x, y, size+20, size);
     //ellipse(x, y, size, size);
   }
 }

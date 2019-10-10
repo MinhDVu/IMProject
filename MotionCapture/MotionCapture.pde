@@ -16,6 +16,10 @@ void setup() {
   leap = new LeapMotion(this);
 }
 
+void leapOnConnect() {
+  println("connected");
+}
+
 void reset() {
   background(0);
 
