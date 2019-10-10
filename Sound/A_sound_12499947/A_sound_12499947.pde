@@ -14,6 +14,10 @@ int flag = 0;
 String timeInterval = "";
 boolean hold = false;
 float pace = 1.2;
+float MIN_INTERVAL = 10;
+float MAX_INTERVAL = 300;
+float MIN_PACE = 0.1;
+float MAX_PACE = 2.4;
 
 color background;
 
@@ -72,9 +76,9 @@ void keyPressed(){
       timeInterval = getTimeString();
       float t = getTime();
       if(t > 300){
-        t = 300;
+      t = 300;
       }
-      pace = 2.5 - map(t,10,300,0.1,2.4);
+      pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
       sw.stop();
       sw.start();
     }
@@ -87,21 +91,13 @@ void keyPressed(){
   }
 }
 
-
-boolean atCorner(){
-  
-  
-  return false;
-}
-
-
 void playHit(){
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
-  Panner p = new Panner(ac, 0);
+  Panner p = new Panner(ac, 0); 
   g = new Gain(ac, 1, 0.5);
-  rate = new Envelope(ac, pace);
+  rate = new Envelope(ac, pace); 
   hit.setRate(rate);
   p.addInput(hit);
   g.addInput(p);
@@ -112,7 +108,7 @@ void playHit(){
 void playCorner(){
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
-  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("corner.mp3")));
+  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
   Panner p = new Panner(ac, 0);
   g = new Gain(ac, 1, 0.5);
   p.addInput(hit);
