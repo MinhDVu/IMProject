@@ -95,7 +95,8 @@ void playHit(){
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
-  Panner p = new Panner(ac, 0); 
+  float pan = map(mouseX,0,width,-1,1); /*Replace mouseX with objectX*/
+  Panner p = new Panner(ac, pan); 
   g = new Gain(ac, 1, 0.5);
   rate = new Envelope(ac, pace); 
   hit.setRate(rate);
@@ -109,7 +110,8 @@ void playCorner(){
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
-  Panner p = new Panner(ac, 0);
+  float pan = map(mouseX,0,width,-1,1); /*Replace mouseX with objectX*/
+  Panner p = new Panner(ac, pan); 
   g = new Gain(ac, 1, 0.5);
   p.addInput(hit);
   g.addInput(p);
