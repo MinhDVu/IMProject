@@ -25,6 +25,7 @@ void reset() {
 void draw() {
   background(0);
   drawAndUpdate();
+  updateHands();
 }
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
