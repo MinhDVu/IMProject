@@ -25,18 +25,31 @@ class CollisionParticle {
   //dvd = loadImage("dvd_logo");
     // Draw a circle based on average motion
   }
+  void edge_check(){
+    //If a wall is hit, invert velocities
+    if(x >= width-1 || x <= 0) vx = -vx; 
+    if(y >= height-1 || y <= 0) vy = -vy;
+  }
 
   void updateCollision( float x_val, float y_val)
   {
+    int flag = 0;
     float dist = size;
     if (dist >= abs(x - x_val) && dist >= abs(y - y_val)) {
+       
+      print("touched ");
+   
       float dx = x - x_val;
       float dy = y - y_val;
       float theta = atan2(dy, dx);
       float endX = x + cos(theta)*size;
       float endY = y + sin(theta)*size;
-      vx = (endX - x_val)/(size*0.7);
+      vx = (endX - x_val)/(size*0.6);
       vy = (endY - y_val)/(size*0.8);
+    }
+    else {
+      x += vx;
+      y += vy;
     }
 
     if (vx > 0) {
@@ -87,6 +100,7 @@ class CollisionParticle {
         vy = -vy;
       }
     }
+   
     x += vx;
     y += vy;
     //if ( y == height )
