@@ -1,3 +1,5 @@
+import java.util.*;
+
 //PImage dvd;
 class CollisionParticle {
   float x;
@@ -33,7 +35,7 @@ class CollisionParticle {
 
   void updateCollision( float x_val, float y_val)
   {
-    int flag = 0;
+    //int flag = 0;
     float dist = size;
     if (dist >= abs(x - x_val) && dist >= abs(y - y_val)) {
        
