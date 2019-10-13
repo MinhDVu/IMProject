@@ -37,11 +37,11 @@ class CollisionParticle {
 
   void updateCollision( float x_val, float y_val)
   {
-    int flag = 0;
+    //int flag = 0;
     float dist = size;
     if (dist >= abs(x - x_val) && dist >= abs(y - y_val)) {
       print("touched ");   
-      flag = 1;
+     // flag = 1;
       float dx = x - x_val;
       float dy = y - y_val;
       float theta = atan2(dy, dx);
@@ -49,10 +49,10 @@ class CollisionParticle {
       float endY = y + sin(theta)*size;
       vx = (endX - x_val)/(size*0.6);
       vy = (endY - y_val)/(size*0.8);
-    } else {
-      x += vx;
-      y += vy;
-    }
+    } //else {
+    //  x += vx;
+    //  y += vy;
+    //}
 
     if (vx > 0) {
       if (x >= width - size/2) {
@@ -113,6 +113,11 @@ class CollisionParticle {
     //vy = vy +4;
     //if ( x == width )
     //vx = vx +4;
+    //if ( x >10 || y >10)
+    //{
+    //  x -= vx;
+    //  y -= vy;
+    //}
   }
   void display() {
     stroke(r, g, b);

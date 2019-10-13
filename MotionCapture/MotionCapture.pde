@@ -2,6 +2,7 @@ import de.voidplus.leapmotion.*;
 float threshold = 50;
 LeapMotion leap;
 Bone[] bones;
+//PVector 
 
 //lists of objects
 ArrayList<CollisionParticle> interactiveCollisions = new ArrayList<CollisionParticle>();
@@ -28,8 +29,9 @@ void reset() {
 }
 void draw() {
   background(0);
-  drawAndUpdate();
   updateHands();
+  drawAndUpdate();
+  
 }
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
@@ -48,18 +50,19 @@ private void updateHands() {
       for (Bone bone : bones ) {
         PVector joint = bone.getPrevJoint();
         //TODO: Logo collision detection here
-        visualizePoint(joint.x, joint.y);
+        visualizePoint(joint.x1, joint.y1);
         //interactiveCollisions.get(0).updateCollision(joint.x, joint.y);
-        for (int i = 0; i < interactiveCollisions.size(); i ++) {
-          interactiveCollisions.get(i).updateCollision(joint.x, joint.y);
-        }
+        //for (int i = 0; i < interactiveCollisions.size(); i ++) {
+  
+          interactiveCollisions.get(0).updateCollision((int)joint.x1,(int)joint.y1);
+        //}
       }
     }
   }
 }
 private void visualizePoint(float x, float y) {
   fill(255, 0, 0);
-  ellipse(x, y, 10, 10);
+  ellipse(x1, y1, 10, 10);
 }
 
 

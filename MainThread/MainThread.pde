@@ -2,6 +2,7 @@ import de.voidplus.leapmotion.*;
 // comment
 static ArrayList<Particle> confetti;
 static  Logo logo;
+static ArrayList <Burst> firework;
 LeapMotion leap;
 Bone[] bones;
 
@@ -14,6 +15,7 @@ void setup() {
   confetti = new ArrayList<Particle>();
   logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
+  firework = new ArrayList();
   reset();
 }
 void reset() {
@@ -26,12 +28,13 @@ void leapOnConnect() {
   println("Leap Motion Connected");
 }
 
-void draw() {
+void draw() { 
   background(0);
   drawThreshold();
   updateHands();
   updateLogo();
   updateParticles();
+  updateParticlesFire();
 }
 
 private void updateHands() {
@@ -77,6 +80,14 @@ private void updateParticles() {
     }
   }
 }
+private void updateParticlesFire() 
+{
+  for (int i = firework.size() - 1; i >= 0; i--) {
+    Burst b = (Burst)firework.get(i);
+    if (b.update()) firework.remove(i);
+  }
+}
+
 
 private void updateLogo() {
   logo.update();
@@ -92,6 +103,7 @@ private void updateLogo() {
   //If lofo hits top left corner
   if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
     addConfetti(logo.TL.x , logo.TL.y);
+    firework.add(new Burst(logo.TL.x, logo.TL.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
     logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
@@ -100,6 +112,7 @@ private void updateLogo() {
   //If logo hits top right corner 
   else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
     addConfetti(logo.TR.x , logo.TR.y);
+    firework.add(new Burst(logo.TR.x, logo.TR.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = width - logo.logo_img.width/2  - THRESHOLD;
     logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
@@ -108,6 +121,7 @@ private void updateLogo() {
   //If logo hits bottom left corner 
   else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
     addConfetti(logo.BL.x , logo.BL.y);
+    firework.add(new Burst(logo.BL.x, logo.BL.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
     logo.Center.y = height - logo.logo_img.height/2  - THRESHOLD;
@@ -116,6 +130,7 @@ private void updateLogo() {
   //If logo hits bottom right corner 
   else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
     addConfetti(logo.BR.x , logo.BR.y);
+    firework.add(new Burst(logo.BR.x, logo.BR.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = width - logo.logo_img.width/2 - THRESHOLD;
     logo.Center.y = height - logo.logo_img.height/2 - THRESHOLD;
@@ -150,6 +165,7 @@ private void updateLogo() {
 // Emulate collision events when the logo hits the screen
 void mousePressed() {
   PVector foo = new PVector(mouseX, mouseY);
+  // firework.add(new Burst(mouseX, mouseY, int(random(50, 100)))); 
   logo.handleInteraction(foo, false);
 }
 
@@ -158,6 +174,7 @@ public void addConfetti(float x, float y) {
     confetti.add(new Particle(x, y));
   }
 }
+
 
 private void visualizePoint(float x, float y) {
   fill(255, 0, 0);
