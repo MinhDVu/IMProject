@@ -5,7 +5,8 @@ static  Logo logo;
 static ArrayList <Burst> firework;
 LeapMotion leap;
 Bone[] bones;
-
+PFont theFont;
+static Stream streams;
 public final int THRESHOLD = 10;
 
 void setup() {
@@ -16,6 +17,7 @@ void setup() {
   firework = new ArrayList<Burst>();
   logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
+  streams = new Stream(1);
 }
 
 void leapOnConnect() {
@@ -29,6 +31,7 @@ void draw() {
   updateLogo();
   updateConfetti();
   updateFirework();
+  streams.update();
 }
 
 private void updateHands() {
@@ -180,5 +183,4 @@ private void drawThreshold() {
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
   line(0, height - THRESHOLD, width, height - THRESHOLD);
-}- THRESHOLD);
 }
