@@ -54,7 +54,7 @@ class Logo {
     } 
 
     if (vx > 0) {
-      if (x1 >= width-1) {
+      if (x1+size+35 >= width-1) {
         if (vx > 0) {
           vx = -vx;
         }
@@ -77,7 +77,7 @@ class Logo {
       }
     }
     if (vy > 0) {
-      if (y1 >= height -1) {
+      if (y1 >= height) {
         if (vy > 0) {
           vy = -vy;
           y1 = height - 1;
@@ -89,10 +89,10 @@ class Logo {
         }
       }
     } else {
-      if (y1 >= height -1) {
+      if (y1 + size+35>= height -1) {
         if (vy > 0) {
           vy = vy;
-          y1 = height - 1;
+          y1 = size+35;
         }
       }
     }
