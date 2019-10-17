@@ -55,7 +55,7 @@ private void updateHands() {
         PVector joint = bone.getPrevJoint();
         //TODO: Logo collision detection here
         visualizePoint(joint.x, joint.y);
-        logo.updateCollision( handPosition.x, handPosition.y);
+        logo.updateCollision( joint.x, joint.y);
       }
     }
   }
