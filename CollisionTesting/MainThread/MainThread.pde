@@ -1,10 +1,27 @@
 import de.voidplus.leapmotion.*;
+import beads.*;
+import org.jaudiolibs.beads.*;
+import java.math.RoundingMode;
 // comment
 static ArrayList<Particle> confetti;
 static  Logo logo;
 static ArrayList <Burst> firework;
 LeapMotion leap;
 Bone[] bones;
+
+/*SOUND ELEMENT*/
+StopWatchTimer sw = new StopWatchTimer();
+AudioContext ac;
+Gain g;
+Envelope rate;
+SamplePlayer hit;
+Glide freqSlider;
+float pace;
+/*MACROS*/
+static float MIN_INTERVAL = 10;
+static float MAX_INTERVAL = 300;
+static float MIN_PACE = 0.1;
+static float MAX_PACE = 2.4;
 
 public final int THRESHOLD = 10;
 
@@ -93,9 +110,11 @@ private void updateLogo() {
    */
   // Logo chanegs color when it hit the screen edges
   if (logo.x1 >= width-1 || logo.x1 <= 0){
+    soundEffect();
     logo.updateColor();
   }
   if (logo.y1 >= height-1 || logo.y1 <= 0){
+    soundEffect();
     logo.updateColor();
   }
   
@@ -103,18 +122,22 @@ private void updateLogo() {
   // Fireworks and particles appear when the logo hit the corner of the screen
   if (logo.x1 < THRESHOLD && logo.y1 < THRESHOLD)
   {
+    playCorner(); //play sound effect
     addConfetti(logo.x1+ logo.size+35 , logo.y1);
     firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
   }
    else if (logo.x1+ logo.size+35 > width - THRESHOLD && logo.y1 < THRESHOLD) {
+     playCorner(); //play sound effect
      addConfetti(logo.x1 , logo.y1);
      firework.add(new Burst(logo.x1 + logo.size+30, logo.y1+ logo.size, int(random(50, 100))));
    }
    else if (logo.x1 < THRESHOLD && logo.y1 > height - THRESHOLD ){
+     playCorner(); //play sound effect
       addConfetti(logo.x1 , logo.y1);
       firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
     }
    else if (logo.x1+ logo.size+30 > width - THRESHOLD && logo.y1 > height - THRESHOLD ){
+     playCorner(); //play sound effect
      addConfetti(logo.x1 , logo.y1);
      firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
    }
@@ -141,4 +164,45 @@ private void drawThreshold() {
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
   line(0, height - THRESHOLD, width, height - THRESHOLD);
+}
+
+/***********************************************
+* SOUND RELATED FUNCTION/HELPER
+***********************************************/
+
+void playHit(){
+  ac = new AudioContext();
+  freqSlider =new Glide(ac, 0, 1000);
+  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
+  float pan = map(mouseX,0,width,-1,1);
+  Panner p = new Panner(ac, pan); 
+  g = new Gain(ac, 1, 0.5);
+  rate = new Envelope(ac, pace); 
+  hit.setRate(rate);
+  p.addInput(hit);
+  g.addInput(p);
+  ac.out.addInput(g);
+  ac.start();
+}
+
+void playCorner(){
+  ac = new AudioContext();
+  freqSlider =new Glide(ac, 0, 1000);
+  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
+  float pan = map(mouseX,0,width,-1,1);
+  Panner p = new Panner(ac, pan);
+  g = new Gain(ac, 1, 0.5);
+  p.addInput(hit);
+  g.addInput(p);
+  ac.out.addInput(g);
+  ac.start();
+}
+
+void soundEffect(){
+  float t = sw.milisecond();
+  if(t > 300) t = 300;
+  pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
+  sw.stop();
+  sw.start();
+  playHit();
 }
