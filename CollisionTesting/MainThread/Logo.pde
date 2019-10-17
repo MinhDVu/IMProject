@@ -33,17 +33,17 @@ class Logo {
     // * |                  |
     // * BL----------------BR
     // */
-    updateCollision((float)mouseX,(float)mouseY);
+    updateCollision((float)mouseX, (float)mouseY);
     show();
   }
 
-   void updateCollision( float x_val, float y_val)
+  void updateCollision( float x_val, float y_val)
   {
     //int flag = 0;
     float dist = size;
     if (dist >= abs(x1 - x_val) && dist >= abs(y1 - y_val)) {
       print("touched ");   
-     // flag = 1;
+      // flag = 1;
       float dx = x1 - x_val;
       float dy = y1 - y_val;
       float theta = atan2(dy, dx);
@@ -89,7 +89,7 @@ class Logo {
         }
       }
     } else {
-      if (y1 + size+35>= height -1) {
+      if (y1 + size+35 >= height -1) {
         if (vy > 0) {
           vy = vy;
           y1 = size+35;
@@ -118,7 +118,6 @@ class Logo {
 
     fill(255, 0, 0);
     noStroke();
- 
   }
 
 

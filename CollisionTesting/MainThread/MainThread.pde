@@ -30,7 +30,7 @@ void setup() {
   //fullScreen();
   //frameRate(5);
   confetti = new ArrayList<Particle>();
-  logo = new Logo(width/2, height/2,5,5,80);
+  logo = new Logo(width/2, height/2, 5, 5, 80);
   leap = new LeapMotion(this);
   firework = new ArrayList();
   reset();
@@ -38,7 +38,7 @@ void setup() {
 void reset() {
   background(0);
 
- // interactiveCollisions.add(new CollisionParticle(width, height, 
+  // interactiveCollisions.add(new CollisionParticle(width, height, 
   //    5, 5, 80, 255,255, 255));
 }
 void leapOnConnect() {
@@ -109,38 +109,35 @@ private void updateLogo() {
    * BL----------------BR
    */
   // Logo chanegs color when it hit the screen edges
-  if (logo.x1 >= width-1 || logo.x1 <= 0){
+  if (logo.x1 >= width-1 || logo.x1 <= 0) {
     soundEffect();
     logo.updateColor();
   }
-  if (logo.y1 >= height-1 || logo.y1 <= 0){
+  if (logo.y1 >= height-1 || logo.y1 <= 0) {
     soundEffect();
     logo.updateColor();
   }
-  
-  
+
+
   // Fireworks and particles appear when the logo hit the corner of the screen
   if (logo.x1 < THRESHOLD && logo.y1 < THRESHOLD)
   {
     playCorner(); //play sound effect
-    addConfetti(logo.x1+ logo.size+35 , logo.y1);
+    addConfetti(logo.x1+ logo.size+35, logo.y1);
     firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
+  } else if (logo.x1+ logo.size+35 > width - THRESHOLD && logo.y1 < THRESHOLD) {
+    playCorner(); //play sound effect
+    addConfetti(logo.x1, logo.y1);
+    firework.add(new Burst(logo.x1 + logo.size+35, logo.y1+ logo.size, int(random(50, 100))));
+  } else if (logo.x1 < THRESHOLD && logo.y1 > height - THRESHOLD ) {
+    playCorner(); //play sound effect
+    addConfetti(logo.x1, logo.y1);
+    firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
+  } else if (logo.x1+ logo.size+30 > width - THRESHOLD && logo.y1 > height - THRESHOLD ) {
+    playCorner(); //play sound effect
+    addConfetti(logo.x1, logo.y1);
+    firework.add(new Burst(logo.x1+logo.size+35, logo.y1, int(random(50, 100))));
   }
-   else if (logo.x1+ logo.size+35 > width - THRESHOLD && logo.y1 < THRESHOLD) {
-     playCorner(); //play sound effect
-     addConfetti(logo.x1 , logo.y1);
-     firework.add(new Burst(logo.x1 + logo.size+30, logo.y1+ logo.size, int(random(50, 100))));
-   }
-   else if (logo.x1 < THRESHOLD && logo.y1 > height - THRESHOLD ){
-     playCorner(); //play sound effect
-      addConfetti(logo.x1 , logo.y1);
-      firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
-    }
-   else if (logo.x1+ logo.size+30 > width - THRESHOLD && logo.y1 > height - THRESHOLD ){
-     playCorner(); //play sound effect
-     addConfetti(logo.x1 , logo.y1);
-     firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
-   }
 }
 
 
@@ -167,14 +164,14 @@ private void drawThreshold() {
 }
 
 /***********************************************
-* SOUND RELATED FUNCTION/HELPER
-***********************************************/
+ * SOUND RELATED FUNCTION/HELPER
+ ***********************************************/
 
-void playHit(){
+void playHit() {
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
-  float pan = map(mouseX,0,width,-1,1);
+  float pan = map(mouseX, 0, width, -1, 1);
   Panner p = new Panner(ac, pan); 
   g = new Gain(ac, 1, 0.5);
   rate = new Envelope(ac, pace); 
@@ -185,11 +182,11 @@ void playHit(){
   ac.start();
 }
 
-void playCorner(){
+void playCorner() {
   ac = new AudioContext();
   freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
-  float pan = map(mouseX,0,width,-1,1);
+  float pan = map(mouseX, 0, width, -1, 1);
   Panner p = new Panner(ac, pan);
   g = new Gain(ac, 1, 0.5);
   p.addInput(hit);
@@ -198,10 +195,10 @@ void playCorner(){
   ac.start();
 }
 
-void soundEffect(){
+void soundEffect() {
   float t = sw.milisecond();
-  if(t > 300) t = 300;
-  pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
+  if (t > 300) t = 300;
+  pace = (MAX_PACE+0.1) - map(t, MIN_INTERVAL, MAX_INTERVAL, MIN_PACE, MAX_PACE); 
   sw.stop();
   sw.start();
   playHit();
