@@ -1,10 +1,28 @@
 import de.voidplus.leapmotion.*;
+import beads.*;
+import org.jaudiolibs.beads.*;
+import java.math.RoundingMode;
 // comment
 static ArrayList<Particle> confetti;
 static  Logo logo;
 static ArrayList <Burst> firework;
 LeapMotion leap;
 Bone[] bones;
+
+/*SOUND ELEMENT*/
+StopWatchTimer sw = new StopWatchTimer();
+AudioContext ac;
+Gain g;
+Envelope rate;
+SamplePlayer hit;
+Glide freqSlider;
+float pace;
+/*MACROS*/
+float MIN_INTERVAL = 10;
+float MAX_INTERVAL = 300;
+float MIN_PACE = 0.1;
+float MAX_PACE = 2.4;
+
 
 public final int THRESHOLD = 10;
 
@@ -16,6 +34,7 @@ void setup() {
   firework = new ArrayList<Burst>();
   logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
+  sw.start();
 }
 
 void leapOnConnect() {
@@ -93,6 +112,7 @@ private void updateLogo() {
 
   //If lofo hits top left corner
   if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
+    playCorner(); //play sound effect
     addConfetti(logo.TL.x , logo.TL.y);
     firework.add(new Burst(logo.TL.x, logo.TL.y, int(random(50, 100))));
     logo.hitCorner();
@@ -102,6 +122,7 @@ private void updateLogo() {
   }
   //If logo hits top right corner 
   else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
+    playCorner(); //play sound effect
     addConfetti(logo.TR.x , logo.TR.y);
     firework.add(new Burst(logo.TR.x, logo.TR.y, int(random(50, 100))));
     logo.hitCorner();
@@ -111,6 +132,7 @@ private void updateLogo() {
   }
   //If logo hits bottom left corner 
   else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
+    playCorner(); //play sound effect
     addConfetti(logo.BL.x , logo.BL.y);
     firework.add(new Burst(logo.BL.x, logo.BL.y, int(random(50, 100))));
     logo.hitCorner();
@@ -120,6 +142,7 @@ private void updateLogo() {
   }
   //If logo hits bottom right corner 
   else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
+    playCorner(); //play sound effect
     addConfetti(logo.BR.x , logo.BR.y);
     firework.add(new Burst(logo.BR.x, logo.BR.y, int(random(50, 100))));
     logo.hitCorner();
@@ -129,24 +152,28 @@ private void updateLogo() {
   }
   //If logo hits right side of the screen
   else if (logo.TR.x >= width) {
+    soundEffect(); 
     logo.Velocity.x = -logo.Velocity.x;
     logo.Center.x = width - logo.logo_img.width/2;
     logo.updateColor();
 
     //If logo hits left side of the screen
   } else if (logo.TL.x <= 0) {
+    soundEffect();
     logo.Velocity.x = -logo.Velocity.x;
     logo.Center.x = logo.logo_img.width/2;
     logo.updateColor();
 
     //If logo hits bottom side
   } else if (logo.BL.y >= height) {
+    soundEffect();
     logo.Velocity.y = -logo.Velocity.y;
     logo.Center.y = height - logo.logo_img.height/2;
     logo.updateColor();
 
     //If logo hits top side
   } else if (logo.TL.y <= 0) {
+    soundEffect();
     logo.Velocity.y = -logo.Velocity.y;
     logo.Center.y = logo.logo_img.height/2;
     logo.updateColor();
@@ -180,5 +207,46 @@ private void drawThreshold() {
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
   line(0, height - THRESHOLD, width, height - THRESHOLD);
-}- THRESHOLD);
+}
+
+
+/***********************************************
+* SOUND RELATED FUNCTION/HELPER
+***********************************************/
+
+void playHit(){
+  ac = new AudioContext();
+  freqSlider =new Glide(ac, 0, 1000);
+  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
+  float pan = map(mouseX,0,width,-1,1);
+  Panner p = new Panner(ac, pan); 
+  g = new Gain(ac, 1, 0.5);
+  rate = new Envelope(ac, pace); 
+  hit.setRate(rate);
+  p.addInput(hit);
+  g.addInput(p);
+  ac.out.addInput(g);
+  ac.start();
+}
+
+void playCorner(){
+  ac = new AudioContext();
+  freqSlider =new Glide(ac, 0, 1000);
+  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
+  float pan = map(mouseX,0,width,-1,1);
+  Panner p = new Panner(ac, pan);
+  g = new Gain(ac, 1, 0.5);
+  p.addInput(hit);
+  g.addInput(p);
+  ac.out.addInput(g);
+  ac.start();
+}
+
+void soundEffect(){
+  float t = sw.milisecond();
+  if(t > 300) t = 300;
+  pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
+  sw.stop();
+  sw.start();
+  playHit();
 }
