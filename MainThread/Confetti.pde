@@ -122,10 +122,10 @@ class Particle {
   // Rotate and draws the shapes 
   private void show() {
     pushMatrix();
-    
+
     translate(x, y);
     rotate(angle += 0.1);
-    
+
     noStroke();
     fill(pColor, opacity);
     if (shape == type.ELLIPSE) {

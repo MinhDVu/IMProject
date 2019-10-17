@@ -68,29 +68,6 @@ class Logo {
       Center = collisionPoint;
       Velocity = new PVector(0, 0);
     } else {
-      /**
-       List<Float> list = new LinkedList<Float>();
-       list.add(PVector.dist(collisionPoint, TL));
-       list.add(PVector.dist(collisionPoint, TR));
-       list.add(PVector.dist(collisionPoint, BL));
-       list.add(PVector.dist(collisionPoint, BR));
-       float min = Collections.min(list);
-       
-       // Switch case for processing closest corner
-       if (min == list.get(0)) {
-       println("touched top left corner");
-       }
-       else if (min == list.get(1)) {
-       println("touched top right corner");
-       }
-       else if (min == list.get(2)) {
-       println("touched bottom left corner");
-       }
-       else if (min == list.get(3)) {
-       println("touched bottom right corner");
-       }
-       */
-
       //Increase the logo's velocity by 3 after being hit
       if (Velocity.x > 0 && Velocity.x < 10) {
         Velocity.x += 3;

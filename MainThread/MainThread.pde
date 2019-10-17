@@ -13,17 +13,11 @@ void setup() {
   //fullScreen();
   //frameRate(5);
   confetti = new ArrayList<Particle>();
+  firework = new ArrayList<Burst>();
   logo = new Logo(width/2, height/2);
   leap = new LeapMotion(this);
-  firework = new ArrayList();
-  reset();
 }
-void reset() {
-  background(0);
 
- // interactiveCollisions.add(new CollisionParticle(width, height, 
-  //    5, 5, 80, 255,255, 255));
-}
 void leapOnConnect() {
   println("Leap Motion Connected");
 }
@@ -33,8 +27,8 @@ void draw() {
   drawThreshold();
   updateHands();
   updateLogo();
-  updateParticles();
-  updateParticlesFire();
+  updateConfetti();
+  updateFirework();
 }
 
 private void updateHands() {
@@ -65,11 +59,7 @@ private void updateHands() {
   }
 }
 
-void leapOnSwipeGesture(SwipeGesture g, int state) {
-  println("swiped");
-}
-
-private void updateParticles() {
+private void updateConfetti() {
   for (int i=0; i < confetti.size(); i++) {
     Particle p = confetti.get(i);
     // Remove particle if they are too small and not visible
@@ -80,7 +70,8 @@ private void updateParticles() {
     }
   }
 }
-private void updateParticlesFire() 
+
+private void updateFirework() 
 {
   for (int i = firework.size() - 1; i >= 0; i--) {
     Burst b = (Burst)firework.get(i);
@@ -189,4 +180,5 @@ private void drawThreshold() {
   line(0, THRESHOLD, width, THRESHOLD);
   line(width - THRESHOLD, 0, width - THRESHOLD, height);
   line(0, height - THRESHOLD, width, height - THRESHOLD);
+}- THRESHOLD);
 }
