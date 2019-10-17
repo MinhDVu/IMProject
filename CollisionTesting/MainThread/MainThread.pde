@@ -103,18 +103,18 @@ private void updateLogo() {
   // Fireworks and particles appear when the logo hit the corner of the screen
   if (logo.x1 < THRESHOLD && logo.y1 < THRESHOLD)
   {
-    addConfetti(logo.x1 , logo.y1);
+    addConfetti(logo.x1+ logo.size+35 , logo.y1);
     firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
   }
-   else if (logo.x1 > width - THRESHOLD && logo.y1 < THRESHOLD) {
+   else if (logo.x1+ logo.size+35 > width - THRESHOLD && logo.y1 < THRESHOLD) {
      addConfetti(logo.x1 , logo.y1);
-     firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
+     firework.add(new Burst(logo.x1 + logo.size+30, logo.y1+ logo.size, int(random(50, 100))));
    }
    else if (logo.x1 < THRESHOLD && logo.y1 > height - THRESHOLD ){
       addConfetti(logo.x1 , logo.y1);
       firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
     }
-   else if (logo.x1 > width - THRESHOLD && logo.y1 > height - THRESHOLD ){
+   else if (logo.x1+ logo.size+30 > width - THRESHOLD && logo.y1 > height - THRESHOLD ){
      addConfetti(logo.x1 , logo.y1);
      firework.add(new Burst(logo.x1, logo.y1, int(random(50, 100))));
    }
