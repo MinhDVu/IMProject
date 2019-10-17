@@ -18,10 +18,10 @@ SamplePlayer hit;
 Glide freqSlider;
 float pace;
 /*MACROS*/
-float MIN_INTERVAL = 10;
-float MAX_INTERVAL = 300;
-float MIN_PACE = 0.1;
-float MAX_PACE = 2.4;
+static float MIN_INTERVAL = 10;
+static float MAX_INTERVAL = 300;
+static float MIN_PACE = 0.1;
+static float MAX_PACE = 2.4;
 
 
 public final int THRESHOLD = 10;
