@@ -15,13 +15,15 @@ AudioContext ac;
 Gain g;
 Envelope rate;
 SamplePlayer hit;
+SamplePlayer corner;
 Glide freqSlider;
-float pace;
-/*MACROS*/
+float pace = 1.2;
+
+/*SOUND MACROS*/
 static float MIN_INTERVAL = 10;
 static float MAX_INTERVAL = 300;
-static float MIN_PACE = 0.1;
-static float MAX_PACE = 2.4;
+static float MIN_PACE = 0.7;
+static float MAX_PACE = 1.8;
 
 
 public final int THRESHOLD = 10;
@@ -122,17 +124,18 @@ private void updateLogo() {
   }
   //If logo hits top right corner 
   else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
-    playCorner(); //play sound effect
+    playCorner();  //play sound effect
     addConfetti(logo.TR.x , logo.TR.y);
     firework.add(new Burst(logo.TR.x, logo.TR.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = width - logo.logo_img.width/2  - THRESHOLD;
     logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
     logo.updateColor();
+
   }
   //If logo hits bottom left corner 
   else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
-    playCorner(); //play sound effect
+    playCorner();   //play sound effect
     addConfetti(logo.BL.x , logo.BL.y);
     firework.add(new Burst(logo.BL.x, logo.BL.y, int(random(50, 100))));
     logo.hitCorner();
@@ -142,7 +145,7 @@ private void updateLogo() {
   }
   //If logo hits bottom right corner 
   else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
-    playCorner(); //play sound effect
+    playCorner();  //play sound effect
     addConfetti(logo.BR.x , logo.BR.y);
     firework.add(new Burst(logo.BR.x, logo.BR.y, int(random(50, 100))));
     logo.hitCorner();
@@ -214,11 +217,21 @@ private void drawThreshold() {
 * SOUND RELATED FUNCTION/HELPER
 ***********************************************/
 
+void soundEffect(){
+  println("Hit Edge");
+  float t = sw.milisecond();
+  if(t > 300) t = 150;
+  pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
+  sw.stop();
+  sw.start();
+  playHit();
+}
+
 void playHit(){
   ac = new AudioContext();
-  freqSlider =new Glide(ac, 0, 1000);
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
-  float pan = map(mouseX,0,width,-1,1);
+  freqSlider =new Glide(ac, 0, 1000);
+  float pan = map(logo.Center.x,0,width,-1,1);
   Panner p = new Panner(ac, pan); 
   g = new Gain(ac, 1, 0.5);
   rate = new Envelope(ac, pace); 
@@ -227,26 +240,18 @@ void playHit(){
   g.addInput(p);
   ac.out.addInput(g);
   ac.start();
+  
 }
 
 void playCorner(){
   ac = new AudioContext();
+  corner = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
   freqSlider =new Glide(ac, 0, 1000);
-  hit = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
-  float pan = map(mouseX,0,width,-1,1);
+  float pan = map(logo.Center.x,0,width,-1,1);
   Panner p = new Panner(ac, pan);
   g = new Gain(ac, 1, 0.5);
-  p.addInput(hit);
+  p.addInput(corner);
   g.addInput(p);
   ac.out.addInput(g);
   ac.start();
-}
-
-void soundEffect(){
-  float t = sw.milisecond();
-  if(t > 300) t = 300;
-  pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
-  sw.stop();
-  sw.start();
-  playHit();
 }
