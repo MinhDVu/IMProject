@@ -13,7 +13,6 @@ class Logo {
 
   public Logo(float x, float y) {
     Center = new PVector(x, y);
-    //Velocity = new PVector(random(-5, 5), random(-5, 5));
     Velocity = new PVector(4, 4);
     this.rgb = color(random(256), random(256), random(256));
     logo_img = loadImage("dvd_logo.png");
@@ -115,21 +114,14 @@ class Logo {
     this.Velocity.y = -(this.Velocity.y);
   }
 
-  //Draw the tinted logo and 4 corners
+  //Draw the tinted logo
   private void show() {
     tint(this.rgb);
     image(logo_img, TL.x, TL.y);
     noFill();
     stroke(0);
-    //ellipse(Center.x, Center.y, r, r);
     fill(255, 0, 0);
     noStroke();
-    ////TODO: Remove these points
-    //ellipse(TL.x, TL.y, 10, 10);
-    //ellipse(TR.x, TR.y, 10, 10);
-    //ellipse(BL.x, BL.y, 10, 10);
-    //ellipse(BR.x, BR.y, 10, 10);
-    //ellipse(Center.x, Center.y, 10, 10);
   }
 
 

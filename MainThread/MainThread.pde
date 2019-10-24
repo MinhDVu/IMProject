@@ -2,7 +2,7 @@ import de.voidplus.leapmotion.*;
 import beads.*;
 import org.jaudiolibs.beads.*;
 import java.math.RoundingMode;
-// comment
+
 static ArrayList<Particle> confetti;
 static  Logo logo;
 static ArrayList <Burst> firework;
@@ -29,9 +29,7 @@ static float MAX_PACE = 1.8;
 public final int THRESHOLD = 10;
 
 void setup() {
-  size(800, 600);
-  //fullScreen();
-  //frameRate(5);
+  size(1200, 800);
   confetti = new ArrayList<Particle>();
   firework = new ArrayList<Burst>();
   logo = new Logo(width/2, height/2);
@@ -43,9 +41,8 @@ void leapOnConnect() {
   println("Leap Motion Connected");
 }
 
-void draw() { 
+void draw() {
   background(0);
-  drawThreshold();
   updateHands();
   updateLogo();
   updateConfetti();
@@ -54,7 +51,6 @@ void draw() {
 
 private void updateHands() {
   for (Hand hand : leap.getHands ()) {
-    //hand.draw();
     PVector handPosition = hand.getPosition();
     visualizePoint(handPosition.x, handPosition.y);
 
@@ -114,28 +110,29 @@ private void updateLogo() {
 
   //If lofo hits top left corner
   if (logo.TL.x < THRESHOLD && logo.TL.y < THRESHOLD) {
-    playCorner(); //play sound effect
+    cornerSoundEffect(); //play sound effect
     addConfetti(logo.TL.x , logo.TL.y);
     firework.add(new Burst(logo.TL.x, logo.TL.y, int(random(50, 100))));
     logo.hitCorner();
+    //Reset logo outside the threshold to avoid infinite hit() loop
     logo.Center.x = logo.logo_img.width/2  + THRESHOLD;
     logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
     logo.updateColor();
   }
   //If logo hits top right corner 
   else if (logo.TR.x > width - THRESHOLD && logo.TR.y < THRESHOLD) {
-    playCorner();  //play sound effect
+    cornerSoundEffect(); //play sound effect
     addConfetti(logo.TR.x , logo.TR.y);
     firework.add(new Burst(logo.TR.x, logo.TR.y, int(random(50, 100))));
     logo.hitCorner();
     logo.Center.x = width - logo.logo_img.width/2  - THRESHOLD;
-    logo.Center.y = logo.logo_img.height/2  + THRESHOLD;
+    logo.Center.y = logo.logo_img.height/2 + THRESHOLD;
     logo.updateColor();
 
   }
   //If logo hits bottom left corner 
   else if (logo.BL.x < THRESHOLD && logo.BL.y > height - THRESHOLD ) {
-    playCorner();   //play sound effect
+    cornerSoundEffect();   //play sound effect
     addConfetti(logo.BL.x , logo.BL.y);
     firework.add(new Burst(logo.BL.x, logo.BL.y, int(random(50, 100))));
     logo.hitCorner();
@@ -145,7 +142,7 @@ private void updateLogo() {
   }
   //If logo hits bottom right corner 
   else if (logo.BR.x > width - THRESHOLD && logo.BR.y > height - THRESHOLD ) {
-    playCorner();  //play sound effect
+    cornerSoundEffect();  //play sound effect
     addConfetti(logo.BR.x , logo.BR.y);
     firework.add(new Burst(logo.BR.x, logo.BR.y, int(random(50, 100))));
     logo.hitCorner();
@@ -185,9 +182,7 @@ private void updateLogo() {
 
 // Emulate collision events when the logo hits the screen
 void mousePressed() {
-  PVector foo = new PVector(mouseX, mouseY);
-  // firework.add(new Burst(mouseX, mouseY, int(random(50, 100)))); 
-  logo.handleInteraction(foo, false);
+  logo.handleInteraction(new PVector(mouseX, mouseY), false);
 }
 
 public void addConfetti(float x, float y) {
@@ -202,17 +197,6 @@ private void visualizePoint(float x, float y) {
   ellipse(x, y, 10, 10);
 }
 
-
-private void drawThreshold() {
-  // Divide sections on screen where animations will behave differently
-  stroke(255);
-  line(THRESHOLD, 0, THRESHOLD, height);
-  line(0, THRESHOLD, width, THRESHOLD);
-  line(width - THRESHOLD, 0, width - THRESHOLD, height);
-  line(0, height - THRESHOLD, width, height - THRESHOLD);
-}
-
-
 /***********************************************
 * SOUND RELATED FUNCTION/HELPER
 ***********************************************/
@@ -224,10 +208,10 @@ void soundEffect(){
   pace = (MAX_PACE+0.1) - map(t,MIN_INTERVAL,MAX_INTERVAL,MIN_PACE,MAX_PACE); 
   sw.stop();
   sw.start();
-  playHit();
+  sideSoundEffect();
 }
 
-void playHit(){
+void sideSoundEffect(){
   ac = new AudioContext();
   hit = new SamplePlayer(ac, SampleManager.sample(dataPath("hit.mp3")));
   freqSlider =new Glide(ac, 0, 1000);
@@ -243,7 +227,7 @@ void playHit(){
   
 }
 
-void playCorner(){
+void cornerSoundEffect(){
   ac = new AudioContext();
   corner = new SamplePlayer(ac, SampleManager.sample(dataPath("fireworks.wav")));
   freqSlider =new Glide(ac, 0, 1000);
