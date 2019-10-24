@@ -1,11 +1,11 @@
 # Interactive DVD Logo
 
-Our concept idea is to create an interactive bouncing DVD Logo Screensaver. The user can
-interact with the bouncing logo by using motion capture on processing. The software detects
-user motion by webcam to interact with the particle on the screen. The particles bounce
-around the screen fast or slow depending on the size of the particle and user’s motion when
-interacting with it. Sound will be generated every time the user interacts with the particles or
-when the particles hit the screen frame.
+>Our concept idea is to create an interactive bouncing DVD Logo Screensaver. The user can
+>interact with the bouncing logo by using motion capture on processing. The software detects
+>user motion by webcam to interact with the particle on the screen. The particles bounce
+>around the screen fast or slow depending on the size of the particle and user’s motion when
+>interacting with it. Sound will be generated every time the user interacts with the particles or
+>when the particles hit the screen frame.
 
 ## Getting Started
 
